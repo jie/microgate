@@ -1,6 +1,17 @@
+let methodsMap = new Map([
+    ['usercenter.getUserInfo', '/user/get_user_info'],
+    ['usercenter.updateUser', '/user/update'],
+]);
+
+let addressMap = new Map([
+    ['usercenter', {
+        'host': '127.0.0.1',
+        'port': 1330
+    }]
+]);
+
+
 module.exports = {
-    apiRouters: {
-        'usercenter.getUserInfo': 'http://127.0.0.1:3000/user/get_user_info',
-        'usercenter.updateUser': 'http://127.0.0.1:3000/user/update',
-    }
+    methodsMap: methodsMap,
+    addressMap: addressMap
 }

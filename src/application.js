@@ -6,8 +6,6 @@ import apiRouters from './testing';
 import {
     RequestHandler
 }
-
-
 from './handler';
 
 export class Application {
@@ -25,7 +23,6 @@ export class Application {
 
     startUp() {
         let server = http.createServer(function(req, res) {
-            console.log(apiRouters);
             let handler = new RequestHandler(req, res);
             handler.sendResponse();
         })
