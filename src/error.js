@@ -10,11 +10,13 @@ class ExtendableError extends Error {
         }
     }
 }
-class GatewayLogicError extends ExtendableError {
+
+export class GatewayLogicError extends ExtendableError {
     constructor(statusCode, statusMessage) {
         super(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`);
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
+        this.errName = 'GatewayLogicError'
     }
 }
 

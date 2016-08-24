@@ -1,7 +1,7 @@
 let methodsMap = new Map([
-    ['usercenter.api1', '/api/1'],
-    ['usercenter.api2', '/api/2'],
-    ['usercenter.api3', '/api/3'],
+    ['usercenter.api1', '/usercenter/api/1'],
+    ['usercenter.api2', '/usercenter/api/2'],
+    ['usercenter.api3', '/usercenter/api/3'],
 ]);
 
 let addressMap = new Map([

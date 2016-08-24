@@ -30,7 +30,8 @@ export class RequestHandler {
     }
 
     sendError(statusCode, statusMessage) {
-        throw new error.GatewayLogicError(statusCode, statusMessage)
+        let e = new error.GatewayLogicError(statusCode, statusMessage);
+        throw e;
     }
 
     getGatewayArguments(body) {

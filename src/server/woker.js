@@ -14,10 +14,10 @@ class ServerWorker {
         this.startUp()
     }
 
-    sendError(res, err) {
-        res.statusCode = err.statusCode;
-        res.statusMessage = err.statusMessage;
-        res.end()
+    sendError(res, statusCode, statusMessage) {
+        res.statusCode = statusCode;
+        res.statusMessage = statusMessage;
+        res.end(statusMessage)
     }
 
     startUp() {
@@ -27,14 +27,12 @@ class ServerWorker {
             if (req.method == 'GET') {
                 try {
                     handler.sendResponse();
-                } catch (err) {
-                    console.log(err);
-                    let a = err instanceof error.GatewayLogicError;
-                    if (err instanceof error.GatewayLogicError) {
-                        self.sendError(res, err);
-                        return
+                } catch (e) {
+                    if (e.eName == 'GatewayLogicError') {
+                        self.sendError(res, e.statusCode, e.statusMessage);
+                    } else {
+                        self.sendError(res, 500, e.message);
                     }
-                    throw err;
                 }
             } else {
                 let body = [];
@@ -44,12 +42,13 @@ class ServerWorker {
                     body = Buffer.concat(body).toString();
                     try {
                         handler.sendResponse(body);
-                    } catch (err) {
-                        if (err instanceof error.GatewayLogicError) {
-                            self.sendError(res, err);
-                            return
+                    } catch (e) {
+                        if (e.eName == 'GatewayLogicError') {
+                            self.sendError(res, e.statusCode,
+                                e.statusMessage);
+                        } else {
+                            self.sendError(res, 500, e.message)
                         }
-                        throw err;
                     }
                 });
             }
