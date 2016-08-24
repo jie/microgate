@@ -15,7 +15,7 @@ export class ServerMaster {
 
     startWorkers() {
         for (let i = 0; i < this.numCPUs; i++) {
-            let pc = child_process.fork('./src/server/woker.js', ['normal']);
+            let pc = child_process.fork('./src/server/worker.js', ['normal']);
             pc.on('close', function(code) {
                 console.log(code)
             })
