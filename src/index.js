@@ -1,8 +1,8 @@
 import argh from 'argh';
 import {
-    Application
+    ServerMaster
 }
-from "./application";
+from "./server/master";
 
-let application = new Application('0.0.0.0', 8000)
-application.startUp()
+let server = new ServerMaster('0.0.0.0', 8000)
+server.startUp()

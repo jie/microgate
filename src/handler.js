@@ -1,7 +1,9 @@
-import parseurl from './thirdparty/parseurl';
+import parseurl from 'parseurl';
 import qs from 'qs';
 import path from 'path';
 import apiRouters from './testing';
+import querystring from 'querystring';
+import error from './error';
 import {
     HttpClient
 }
@@ -11,36 +13,56 @@ import {
 }
 from './testing';
 
+const GatewayParameters = [
+    'g_nonce',
+    'g_timestamp',
+    'g_signature',
+    'g_method'
+]
+
 
 export class RequestHandler {
 
     constructor(req, res) {
         this.req = req;
         this.res = res;
-        this.parameters = {};
+        this.parameters = new Map();
     }
 
-    getGatewayArguments() {
-        let parameters = {};
+    sendError(statusCode, statusMessage) {
+        throw new error.GatewayLogicError(statusCode, statusMessage)
+    }
+
+    getGatewayArguments(body) {
         switch (this.req.method) {
             case 'GET':
                 this.parameters = qs.parse(parseurl(this.req).query);
+                console.log(this.parameters)
                 break;
             default:
-                if (this.req['Content-Type'].include('json')) {
-                    this.parameters = JSON.parse(req.body);
-                } else if (this.req['Content-Type'].include('urlencoded')) {
-                    this.parameters = qs.parse(req.body);
+                if (this.req.headers['content-type'].includes('json')) {
+                    this.parameters = JSON.parse(this.req.body);
+                } else if (this.req.headers['content-type'].includes(
+                        'urlencoded')) {
+                    this.parameters = qs.parse(body);
                 } else {
-                    console.log(
-                        `content_type: ${this.req['Content-Type']} not supported`
+                    this.sendError(500,
+                        `content_type: ${this.req.headers['content-type']} not supported`
                     )
                 }
-
         }
-        console.log('parameters:', parameters)
     }
 
+    rebuildGetUrl() {
+        let query = {};
+        for (let arg in this.parameters) {
+            if (!GatewayParameters.includes(arg)) {
+                query[arg] = this.parameters[arg]
+            }
+        }
+        console.log('query, ', query)
+        return querystring.stringify(query)
+    }
 
     verifySignature() {
         // return if signature is valid
@@ -54,34 +76,76 @@ export class RequestHandler {
         // send request to forward api
     }
 
-    sendResponse() {
-        this.getGatewayArguments();
-        // send response to client
-        let host = this.req.headers.host,
-            ip = this.req.headers['x-forwarded-for'] || this.req.connection
-            .remoteAddress;
-        console.log("client ip:" + ip + ", host:" + host);
+    getApiAddress(body) {
+        this.getGatewayArguments(body);
 
-        let addr = addressMap.get('usercenter');
-        let method = methodsMap.get('usercenter.getUserInfo');
-        let options = {
-            host: addr.host,
-            port: addr.port,
-            path: method,
-            method: this.req.method,
-            headers: {
-                'content-type': this.req.headers['content-type'],
-                'accept-encoding': this.req.headers['accept-encoding'],
-                'accept-language': this.req.headers['accept-language'],
-                'user-agent': this.req.headers['user-agent']
-            }
+        if (!this.parameters.g_method) {
+            this.sendError(404, 'method args not defined');
         }
 
+        let methodArray = this.parameters.g_method.split('.');
+        if (methodArray.length < 2) {
+            this.sendError(400, 'bad method args format')
+        }
+
+        let addrKey = methodArray[methodArray.length - 2];
+        let addr = addressMap.get(addrKey);
+
+        if (!addr) {
+            this.sendError(400, `address not found: ${addrKey}`);
+        }
+
+        let methodPath = methodsMap.get(this.parameters.g_method)
+        if (!methodPath) {
+            this.sendError(400, `method not found: ${addrKey}`);
+        }
+        return {
+            addr: addr,
+            path: methodPath
+        }
+    }
+
+    sendResponse(body) {
         let self = this;
+        let headers = {}
+        let apiAddress = this.getApiAddress(body)
+        let options = {
+            host: apiAddress.addr.host,
+            port: apiAddress.addr.port,
+            method: this.req.method
+        }
+
+        if (this.req.headers['accept-encoding']) {
+            headers['Accept-Encoding'] = this.req.headers['accept-encoding']
+        }
+
+        if (this.req.headers['accept-language']) {
+            headers['Accept-Language'] = this.req.headers['accept-language']
+        }
+
+        if (this.req.headers['user-agent']) {
+            headers['User-Agent'] = this.req.headers['user-agent']
+        }
+
+        if (Object.keys(headers).length) {
+            options['headers'] = headers;
+        }
+
+        if (this.req.method == 'GET') {
+            let query = this.rebuildGetUrl();
+            options['path'] = `${apiAddress.path}?${query}`;
+        } else {
+            options['path'] = apiAddress.path;
+        }
+
         let httpclient = new HttpClient(options);
 
-        httpclient.fetch(function(chunk) {
+        httpclient.fetch(function(response, chunk) {
             self.res.end(chunk);
+        }, function(err) {
+            self.res.statusCode = 500;
+            self.res.statusMessage = err;
+            self.res.end(err);
         })
     }
 }
