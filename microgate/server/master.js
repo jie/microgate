@@ -15,7 +15,9 @@ export class ServerMaster {
 
     startWorkers() {
         for (let i = 0; i < this.numCPUs; i++) {
-            let cp = child_process.fork('./src/server/worker.js', ['normal']);
+            let cp = child_process.fork('./microgate/server/worker.js', [
+                'normal'
+            ]);
             cp.on('close', function(code) {
                 console.log(code)
             })

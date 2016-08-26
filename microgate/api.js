@@ -21,23 +21,17 @@ const GatewayParameters = [
 ]
 
 
-export class RequestHandler {
+export class ApiHandler {
 
-    constructor(req, res) {
-        this.req = req;
-        this.res = res;
-        this.parameters = new Map();
-        this.chunk = '';
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.apiRouters = apiRouters;
     }
 
-    sendError(statusCode, statusMessage) {
-        throw new error.GatewayLogicError(statusCode, statusMessage);
-    }
-
-    getGatewayArguments(body) {
-        switch (this.req.method) {
+    handleApi() {
+        switch (this.ctx.request.method) {
             case 'GET':
-                this.parameters = qs.parse(parseurl(this.req).query);
+                this.parameters = qs.parse(parseurl(this.ctx.request).query);
                 break;
             default:
                 if (this.req.headers['content-type'].includes('json')) {
@@ -50,6 +44,10 @@ export class RequestHandler {
                     )
                 }
         }
+    }
+
+    getGatewayArguments(body) {
+
     }
 
     rebuildGetUrl() {
