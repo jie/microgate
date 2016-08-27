@@ -1,14 +1,14 @@
 let methodsMap = new Map([
-    ['usercenter.api1', {
-        path: '/usercenter/api/1',
+    ["usercenter.api1", {
+        path: "/usercenter/api/1",
         timeout: 10
     }],
-    ['usercenter.api2', {
-        path: '/usercenter/api/2',
+    ["usercenter.api2", {
+        path: "/usercenter/api/2",
         timeout: 20
     }],
-    ['usercenter.api3', {
-        path: '/usercenter/api/3',
+    ["usercenter.api3", {
+        path: "/usercenter/api/3",
         timeout: 30
     }],
 ]);

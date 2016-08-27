@@ -1,8 +1,9 @@
 import http from 'http';
 import os from 'os';
 import child_process from 'child_process';
-import net from 'net'
-
+import net from 'net';
+import argh from 'argh'
+import process from 'process';
 
 export class ServerMaster {
     constructor(host, port) {
@@ -15,9 +16,8 @@ export class ServerMaster {
 
     startWorkers() {
         for (let i = 0; i < this.numCPUs; i++) {
-            let cp = child_process.fork('./microgate/server/worker.js', [
-                'normal'
-            ]);
+            let cp = child_process.fork('./microgate/server/worker.js',
+                process.argv);
             cp.on('close', function(code) {
                 console.log(code)
             })
