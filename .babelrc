@@ -7,5 +7,18 @@
         "transform-es2015-parameters",
         "transform-async-to-generator"
     ],
-    "presets": ["es2015"]
+    "presets": ["es2015", "stage-0", "react"],
+    "env": {
+        "development": {
+            "plugins": [
+                "transform-runtime", ["react-transform", {
+                    "transforms": [{
+                        "transform": "react-transform-hmr",
+                        "imports": ["react"],
+                        "locals": ["module"]
+                    }]
+                }]
+            ]
+        }
+    }
 }
