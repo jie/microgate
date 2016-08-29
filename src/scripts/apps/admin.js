@@ -10,6 +10,9 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import BaseReactComponent from '../components/base';
 import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 // const AdminApp = ({ children }) => {
 //     const title = "AdminApp"
 //     const path = "/portal/admin"
@@ -94,6 +97,7 @@ class AdminApisApp extends BaseReactComponent {
     };
 
     handleClose = () => {
+        console.log('apiDialogStatus:', this.state.apiDialogStatus);
       this.setState({apiDialogStatus: false});
     };
 
@@ -125,26 +129,28 @@ class AdminApisApp extends BaseReactComponent {
                     </div>
                 </Paper>
                 <Dialog
-                  title="Dialog With Actions"
                   actions={actions}
-                  modal={true}
-                  open={this.state.apiDialogStatus}>
-                  Only actions can close this dialog.
-                  <TextField
-                      hintText="Hint Text"
-                    /><br />
-                    <br />
-                    <TextField
-                      hintText="The hint text can be as long as you want, it will wrap."
-                    /><br />
-                    <TextField
-                      id="text-field-default"
-                      defaultValue="Default Value"
-                    /><br />
-                    <TextField
-                      hintText="Hint Text"
-                      floatingLabelText="Floating Label Text"
-                    />
+                  modal={false}
+                  open={this.state.apiDialogStatus}
+                  onRequestClose={this.handleClose}>
+                  <div>
+                        <TextField fullWidth={true} floatingLabelText="API Method Name" />
+                        <br />
+                        <TextField fullWidth={true} floatingLabelText="API Path" />
+                        <br />
+                        <TextField fullWidth={true} floatingLabelText="Request Timeout" />
+                        <br />
+                        <TextField
+                          floatingLabelText="API Remarks"
+                          multiLine={true}
+                          fullWidth={true}
+
+                          rows={4} />
+                        <br />
+                        <Checkbox label="Enabled"/>
+                        <br />
+                        <Checkbox label="Verify Signature"/>
+                  </div>
                 </Dialog>
             </div>
         );
