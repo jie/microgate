@@ -3,11 +3,14 @@ import {
     Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn
 }
 from 'material-ui/Table';
+import Paper from 'material-ui/Paper';
+import BaseReactComponent from './base';
 
 
-let TableExampleSimple = React.createClass({
+class MyTable extends BaseReactComponent {
     render() {
         return (
+            <Paper>
             <Table>
             <TableHeader>
               <TableRow>
@@ -39,10 +42,10 @@ let TableExampleSimple = React.createClass({
               </TableRow>
             </TableBody>
           </Table>
+          </Paper>
         );
-
     }
-});
+}
 
 
-export default TableExampleSimple;
+export default MyTable;
