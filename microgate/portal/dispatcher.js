@@ -14,9 +14,12 @@ export default class Dispatcher {
         let pathname = this.getUrlPath(ctx.request);
         let method = ctx.request.method;
         for (let obj of this.urls) {
-            if (pathname == obj.path && method == obj.method) {
+            if (!obj.matchAll && pathname == obj.path && method == obj.method) {
+                return await obj.handler(ctx);
+            } else if (obj.matchAll && pathname.startsWith(obj.path) && method == obj.method) {
                 return await obj.handler(ctx);
             }
         }
+        ctx.throw(`path not found`, 404);
     }
 }

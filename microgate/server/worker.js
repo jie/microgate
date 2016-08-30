@@ -1,14 +1,18 @@
-import Koa from 'koa';
-import process from 'process';
-import util from 'util';
-import http from 'http';
-import bodyParser from 'koa-bodyparser';
-import handler from './handler';
+import Koa from 'koa'
+import path from 'path'
+import process from 'process'
+import util from 'util'
+import http from 'http'
+import bodyParser from 'koa-bodyparser'
+import handler from './handler'
 import dispatcher from '../portal'
-import dateutils from '../utils/dateutils';
+import dateutils from '../utils/dateutils'
+import serve from 'koa-static-server'
 
 const app = new Koa();
+const staticPath = path.join(__dirname, '/../../public');
 
+app.use(serve({rootDir: staticPath}))
 app.use(bodyParser());
 
 app.use(async(ctx, next) => {
@@ -29,18 +33,20 @@ app.use(async(ctx, next) => {
     }
 });
 
+
 app.use(async(ctx, next) => {
     if (ctx.request.url.startsWith('/platform/api')) {
         let apiOptions = handler.getApiOptions(ctx);
         ctx.body = await handler.fetchApi(apiOptions);
     }
 
-    if (ctx.request.url.startsWith('/platform/portal')) {
+    if (ctx.request.url.startsWith('/portal')) {
         let body = await dispatcher.handle(ctx);
         ctx.body = body;
-        console.log('response:', ctx.response.header);
     }
+
 });
+
 
 app.wait_socket = function() {
     let server = http.createServer(this.callback());
