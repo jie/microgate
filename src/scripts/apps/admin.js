@@ -33,54 +33,51 @@ import MenuItem from 'material-ui/MenuItem';
 
 class AdminApp extends BaseReactComponent {
 
-    static propTypes = {
-        children: React.PropTypes.node,
-        location: React.PropTypes.object,
-    };
+  static propTypes = {
+    children: React.PropTypes.node,
+    location: React.PropTypes.object,
+  };
 
-    static contextTypes = {
-        router: React.PropTypes.object.isRequired,
-    };
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired,
+  };
 
-    handleChangeList = (event, value) => {
-        this.context.router.push(value);
-        this.setState({
-            navDrawerOpen: false,
-        });
-    };
+  handleChangeList = (event, value) => {
+    this.context.router.push(value);
+    this.setState({
+      navDrawerOpen: false,
+    });
+  };
 
-    render() {
-        const {
-          location,
-          children,
-        } = this.props;
+  render() {
+    const {location, children, } = this.props;
 
-        return (
-           <div>
-               <AppHeaderBar appTitle="Microgate" />
-               <div className="admin-body">
-                   <div className="sidebar">
-                       <SideList location={location} onChangeList={this.handleChangeList} />
-                   </div>
-                   <div className="mainbar">
-                       {children}
-                   </div>
-               </div>
-           </div>
-       )
-    }
+    return (
+      <div>
+        <AppHeaderBar appTitle="Microgate" />
+        <div className="admin-body">
+          <div className="sidebar">
+            <SideList location={ location } onChangeList={ this.handleChangeList } />
+          </div>
+          <div className="mainbar">
+            { children }
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 
 class AdminDashboardApp extends BaseReactComponent {
 
-    render() {
-        return (
-            <div>
-                <MyTable  />
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <MyTable />
+      </div>
+      );
+  }
 }
 
 AdminDashboardApp.title = 'AdminDashboardApp';
@@ -88,73 +85,59 @@ AdminDashboardApp.path = '/portal/admin/dashboard';
 
 class AdminApisApp extends BaseReactComponent {
 
-    state = {
-      apiDialogStatus: false,
-    };
+  state = {
+    apiDialogStatus: false,
+  };
 
-    handleOpen = () => {
-      this.setState({apiDialogStatus: true});
-    };
+  handleOpen = () => {
+    this.setState({
+      apiDialogStatus: true
+    });
+  };
 
-    handleClose = () => {
-        console.log('apiDialogStatus:', this.state.apiDialogStatus);
-      this.setState({apiDialogStatus: false});
-    };
+  handleClose = () => {
+    console.log('apiDialogStatus:', this.state.apiDialogStatus);
+    this.setState({
+      apiDialogStatus: false
+    });
+  };
 
 
-    render() {
+  render() {
 
-        const actions = [
-          <FlatButton
-            label="Cancel"
-            primary={true}
-            onTouchTap={this.handleClose}
-          />,
-          <FlatButton
-            label="Submit"
-            primary={true}
-            disabled={true}
-            onTouchTap={this.handleClose}
-          />,
-        ];
+    const actions = [
+      <FlatButton label="Cancel" primary={ true } onTouchTap={ this.handleClose } />,
+      <FlatButton label="Submit" primary={ true } disabled={ true } onTouchTap={ this.handleClose } />,
+    ];
 
-        return (
-            <div>
-                <Paper>
-                    <div>
-                      <FlatButton label="Create API" onTouchTap={this.handleOpen}/>
-                      <FlatButton label="Primary" primary={true} />
-                      <FlatButton label="Secondary" secondary={true} />
-                      <FlatButton label="Disabled" disabled={true} />
-                    </div>
-                </Paper>
-                <Dialog
-                  actions={actions}
-                  modal={false}
-                  open={this.state.apiDialogStatus}
-                  onRequestClose={this.handleClose}>
-                  <div>
-                        <TextField fullWidth={true} floatingLabelText="API Method Name" />
-                        <br />
-                        <TextField fullWidth={true} floatingLabelText="API Path" />
-                        <br />
-                        <TextField fullWidth={true} floatingLabelText="Request Timeout" />
-                        <br />
-                        <TextField
-                          floatingLabelText="API Remarks"
-                          multiLine={true}
-                          fullWidth={true}
-
-                          rows={4} />
-                        <br />
-                        <Checkbox label="Enabled"/>
-                        <br />
-                        <Checkbox label="Verify Signature"/>
-                  </div>
-                </Dialog>
-            </div>
-        );
-    }
+    return (
+      <div>
+        <Paper>
+          <div>
+            <FlatButton label="Create API" onTouchTap={ this.handleOpen } />
+            <FlatButton label="Primary" primary={ true } />
+            <FlatButton label="Secondary" secondary={ true } />
+            <FlatButton label="Disabled" disabled={ true } />
+          </div>
+        </Paper>
+        <Dialog actions={ actions } modal={ false } open={ this.state.apiDialogStatus } onRequestClose={ this.handleClose }>
+          <div>
+            <TextField fullWidth={ true } floatingLabelText="API Method Name" />
+            <br />
+            <TextField fullWidth={ true } floatingLabelText="API Path" />
+            <br />
+            <TextField fullWidth={ true } floatingLabelText="Request Timeout" />
+            <br />
+            <TextField floatingLabelText="API Remarks" multiLine={ true } fullWidth={ true } rows={ 4 } />
+            <br />
+            <Checkbox label="Enabled" />
+            <br />
+            <Checkbox label="Verify Signature" />
+          </div>
+        </Dialog>
+      </div>
+      );
+  }
 }
 
 AdminApisApp.title = 'AdminApisApp';
@@ -162,32 +145,32 @@ AdminApisApp.path = '/portal/admin/apis';
 
 class AdminAddressApp extends BaseReactComponent {
 
-    render() {
-        return (
-            <div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+      </div>
+      );
+  }
 }
 AdminAddressApp.title = 'AdminAddressApp';
 AdminAddressApp.path = '/portal/admin/address';
 
 class AdminApplicationApp extends BaseReactComponent {
 
-    render() {
-        return (
-            <div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+      </div>
+      );
+  }
 }
 AdminApplicationApp.title = 'AdminApplicationApp';
 AdminApplicationApp.path = '/portal/admin/applications';
 
 module.exports = {
-    AdminApp: AdminApp,
-    AdminDashboardApp: AdminDashboardApp,
-    AdminApisApp: AdminApisApp,
-    AdminAddressApp: AdminAddressApp,
-    AdminApplicationApp: AdminApplicationApp
+  AdminApp: AdminApp,
+  AdminDashboardApp: AdminDashboardApp,
+  AdminApisApp: AdminApisApp,
+  AdminAddressApp: AdminAddressApp,
+  AdminApplicationApp: AdminApplicationApp
 }

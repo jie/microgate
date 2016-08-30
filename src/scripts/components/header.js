@@ -10,24 +10,18 @@ import muiTheme from '../theme/theme';
 import BaseReactComponent from './base';
 
 export default class AppHeaderBar extends BaseReactComponent {
-    static propTypes = {
-        appTitle: React.PropTypes.string.isRequired,
-    };
-    render() {
-        return (
-            <AppBar
-                title={this.props.appTitle}
-                iconElementRight={
-                    <IconMenu
-                        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem primaryText="Refresh" />
-                        <MenuItem primaryText="Help" />
-                        <MenuItem primaryText="Sign out" />
-                    </IconMenu>
-                }
-            />
-        )
-    }
+  static propTypes = {
+    appTitle: React.PropTypes.string.isRequired,
+  };
+  render() {
+    return (
+      <AppBar title={ this.props.appTitle } iconElementRight={ <IconMenu iconButtonElement={ <IconButton>
+                                                                                         <MoreVertIcon />
+                                                                                       </IconButton> } targetOrigin={ { horizontal: 'right', vertical: 'top' } } anchorOrigin={ { horizontal: 'right', vertical: 'top' } }>
+                                                           <MenuItem primaryText="Refresh" />
+                                                           <MenuItem primaryText="Help" />
+                                                           <MenuItem primaryText="Sign out" />
+                                                         </IconMenu> } />
+    )
+  }
 }

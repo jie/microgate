@@ -6,22 +6,22 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 export class AccountLoginApp extends React.Component {
 
-    render() {
-        return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-              <Paper className='Login' zDepth={3}>
-                <div>
-                  <TextField fullWidth={true} hintText='Email' floatingLabelText='Email' />
-                  <br />
-                  <TextField fullWidth={true} hintText='Password' floatingLabelText='Password' />
-                </div>
-                <div className='LoginButton'>
-                  <RaisedButton label='Signin' primary={true} />
-                </div>
-              </Paper>
-            </MuiThemeProvider>
-        );
-    }
+  render() {
+    return (
+      <MuiThemeProvider muiTheme={ muiTheme }>
+        <Paper className='Login' zDepth={ 3 }>
+          <div>
+            <TextField fullWidth={ true } hintText='Email' floatingLabelText='Email' />
+            <br />
+            <TextField fullWidth={ true } hintText='Password' floatingLabelText='Password' />
+          </div>
+          <div className='LoginButton'>
+            <RaisedButton label='Signin' primary={ true } />
+          </div>
+        </Paper>
+      </MuiThemeProvider>
+      );
+  }
 }
 
 AccountLoginApp.title = 'AccountLoginApp';

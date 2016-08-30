@@ -22,38 +22,22 @@ const style = {
     lineHeight: '24px',
   },
   activeItem: {
-      background: 'red'
+    background: 'red'
   }
 };
 
 export default class SidebarMenu extends BaseReactComponent {
-    render() {
-        return (
-            <Paper style={style.paper}>
-              <Menu>
-                <MenuItem
-                    primaryText="Dashboard"
-                    containerElement={<Link to="/portal/admin/dashboard" activeStyle={style.activeItem} />}
-                    leftIcon={<DashboardIcon />}
-                />
-                <Divider />
-                <MenuItem
-                    primaryText="APIs"
-                    containerElement={<Link to="/portal/admin/apis" activeStyle={style.activeItem} />}
-                    leftIcon={<HttpIcon />}
-                />
-                <MenuItem
-                    primaryText="Address"
-                    containerElement={<Link to="/portal/admin/address" activeStyle={style.activeItem} />}
-                    leftIcon={<StorageIcon />}
-                />
-                <MenuItem
-                    primaryText="Applications"
-                    containerElement={<Link to="/portal/admin/application" activeStyle={style.activeItem} />}
-                    leftIcon={<DeveloperModeIcon />}
-                />
-              </Menu>
-            </Paper>
-        )
-    }
+  render() {
+    return (
+      <Paper style={ style.paper }>
+        <Menu>
+          <MenuItem primaryText="Dashboard" containerElement={ <Link to="/portal/admin/dashboard" activeStyle={ style.activeItem } /> } leftIcon={ <DashboardIcon /> } />
+          <Divider />
+          <MenuItem primaryText="APIs" containerElement={ <Link to="/portal/admin/apis" activeStyle={ style.activeItem } /> } leftIcon={ <HttpIcon /> } />
+          <MenuItem primaryText="Address" containerElement={ <Link to="/portal/admin/address" activeStyle={ style.activeItem } /> } leftIcon={ <StorageIcon /> } />
+          <MenuItem primaryText="Applications" containerElement={ <Link to="/portal/admin/application" activeStyle={ style.activeItem } /> } leftIcon={ <DeveloperModeIcon /> } />
+        </Menu>
+      </Paper>
+    )
+  }
 }
