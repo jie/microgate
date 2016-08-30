@@ -1,10 +1,11 @@
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import React from 'react';
 import muiTheme from '../theme/theme'
 import Paper from 'material-ui/Paper'
-import React from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-export class AccountLoginApp extends React.Component {
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+import BaseReactComponent from '../components/base'
+
+export default class AccountLoginApp extends BaseReactComponent {
 
   render() {
     return (
@@ -23,6 +24,3 @@ export class AccountLoginApp extends React.Component {
       );
   }
 }
-
-AccountLoginApp.title = 'AccountLoginApp';
-AccountLoginApp.path = '/portal/account/login';

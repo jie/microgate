@@ -58,3 +58,11 @@ ul.breadcrumbs-list li a.breadcrumb-active {
 .LoginButton {
     margin-top: 20px;
 }
+
+.flatPaper {
+    padding: 10px 20px;
+}
+
+.formPaper .controller {
+    text-align: right;
+}
