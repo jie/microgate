@@ -44,7 +44,6 @@ app.use(async(ctx, next) => {
         let body = await dispatcher.handle(ctx);
         ctx.body = body;
     }
-
 });
 
 

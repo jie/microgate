@@ -1,19 +1,77 @@
-import React from 'react';
-import Paper from 'material-ui/Paper';
-import FlatButton from 'material-ui/FlatButton';
-import Divider from 'material-ui/Divider';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
-import SelectField from 'material-ui/SelectField';
+import React from 'react'
+import axios from 'axios'
+import Paper from 'material-ui/Paper'
+import FlatButton from 'material-ui/FlatButton'
+import Divider from 'material-ui/Divider'
+import Checkbox from 'material-ui/Checkbox'
+import NotifyBar from '../../components/NotifyBar'
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+
+
 import BaseReactComponent from '../../components/base'
 
 export default class ApisListApp extends BaseReactComponent {
 
-    render() {
+    constructor(props){
+        super(props);
+        this.state = {
+            notifyBarState: false,
+            notifyBarMessage: '',
+            name: props.location.query.name,
+            methodsMap: {}
+        };
+        let self = this;
+        axios.get('/portal/rest/apis/query').then(function (response) {
+            self.setState({'methodsMap': response.data})
+        }).catch(function (error) {
+            console.log('error', error);
+            self.setState({notifyBarState: true, notifyBarMessage: error.message})
+        });
+    };
 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
+    };
+
+    render() {
+        console.log(this.state.methodsMap)
+        let tabRows = [];
+        for(let i in this.state.methodsMap) {
+            let item = this.state.methodsMap[i]
+            tabRows.push(
+                <TableRow key={i}>
+                    <TableRowColumn>{i}</TableRowColumn>
+                    <TableRowColumn>{item.path}</TableRowColumn>
+                    <TableRowColumn>{item.timeout}</TableRowColumn>
+                    <TableRowColumn>
+                        <FlatButton
+                          label="View"
+                          primary={true}
+                        />
+                    </TableRowColumn>
+                </TableRow>
+            )
+
+        }
         return (
             <div className="formPaper">
-                <Paper></Paper>
+                <Paper>
+
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHeaderColumn>Name</TableHeaderColumn>
+                      <TableHeaderColumn>Path</TableHeaderColumn>
+                      <TableHeaderColumn>Timeout</TableHeaderColumn>
+                      <TableHeaderColumn>Operation</TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tabRows}
+                  </TableBody>
+                </Table>
+                </Paper>
+                <NotifyBar open={this.state.notifyBarState} message={this.state.notifyBarMessage}/>
             </div>
         );
     }

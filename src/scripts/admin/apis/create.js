@@ -7,6 +7,7 @@ import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
 import SelectField from 'material-ui/SelectField';
 import GroupTextField from '../../components/groupTextField'
+import NotifyBar from '../../components/NotifyBar'
 import BaseReactComponent from '../../components/base'
 import axios from 'axios'
 
@@ -36,7 +37,9 @@ export default class ApiCreateApp extends BaseReactComponent {
         this.state = {
             headerItems: [],
             bodyItems: [],
-            formData: {}
+            formData: {},
+            notifyBarState: false,
+            notifyBarMessage: ''
         };
     };
 
@@ -53,54 +56,63 @@ export default class ApiCreateApp extends BaseReactComponent {
     };
 
     handleSubmitForm = (e) => {
+        let self = this;
         let data = this.state.formData;
-        console.log('data:', data)
         data.headerItems = this.state.headerItems;
         data.bodyItems = this.state.bodyItems;
         axios.post('/portal/rest/apis/create', data).then(function (response) {
-             console.log(response);
+            console.log('success:', response);
         }).catch(function (error) {
-             console.log(error);
+            console.log('error', error);
+            self.setState({notifyBarState: true, notifyBarMessage: error.message})
         });
-
     };
 
-    handleTextFieldChange = (event) => {
-        this.
+    handleTextFieldChange = (e) => {
+        this.state.formData[e.target.name] = e.target.value;
     }
+
+    handleCheckboxChange = (e) => {
+        this.state.formData[e.target.name] = e.target.checked;
+    };
 
     render() {
         return (
             <div className="formPaper">
+                <NotifyBar open={this.state.notifyBarState} message={this.state.notifyBarMessage}/>
                 <Paper className="flatPaper">
                     <TextField
                         name="name"
                         onChange={this.handleTextFieldChange}
-                        value={this.state.formData.method_name}
+                        defaultValue={this.state.formData.method_name}
                         fullWidth={true}
                         floatingLabelText="API Method Name" />
                     <br />
                     <TextField
+                        name="path"
                         onChange={this.handleTextFieldChange}
-                        value={this.state.formData.path}
+                        defaultValue={this.state.formData.path}
                         fullWidth={true}
                         floatingLabelText="API Path" />
                     <br />
                     <TextField
+                        name="timeout"
                         onChange={this.handleTextFieldChange}
-                        value={this.state.formData.timeout}
+                        defaultValue={this.state.formData.timeout}
                         fullWidth={true}
                         floatingLabelText="Request Timeout" />
                     <br />
                     <TextField
+                        name="remark"
                         onChange={this.handleTextFieldChange}
-                        value={this.state.formData.remark}
+                        defaultValue={this.state.formData.remark}
                         floatingLabelText="API Remarks"
                         multiLine={true}
                         fullWidth={true}
                         rows={4} />
                     <br />
                     <GroupTextField
+                        groupType="HeaderItems"
                         key="custom-header"
                         title="Custom Headers"
                         fieldsList={this.state.headerItems}
@@ -108,14 +120,25 @@ export default class ApiCreateApp extends BaseReactComponent {
                         dataValSource={HeaderValDataSource}
                     />
                     <GroupTextField
+                        groupType="BodyItems"
                         key="custom-body"
                         title="Custom Body"
                         fieldsList={this.state.bodyItems}
                     />
                     <br />
-                    <Checkbox label="Inner API" checked={this.state.formData.isInner} />
+                    <Checkbox
+                        name="isInner"
+                        onCheck={this.handleCheckboxChange}
+                        label="Inner API"
+                        defaultChecked={this.state.formData.isInner}
+                    />
                     <br />
-                    <Checkbox label="Verify Signature" checked={this.state.formData.isSign} />
+                    <Checkbox
+                        name="isSign"
+                        onCheck={this.handleCheckboxChange}
+                        label="Verify Signature"
+                        defaultChecked={this.state.formData.isSign}
+                    />
                     <br />
                     <Divider />
                     <br />

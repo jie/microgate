@@ -19,7 +19,13 @@ import SupervisorIcon from 'material-ui/svg-icons/action/supervisor-account';
 
 
 const SelectableList = MakeSelectable(List);
+const style = {
+    paper: {
+        display: 'inline-block',
+        width: '100%'
+    }
 
+};
 export default class SideList extends BaseReactComponent {
   static propTypes = {
     location: React.PropTypes.object.isRequired,

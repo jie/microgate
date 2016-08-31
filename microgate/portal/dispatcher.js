@@ -13,6 +13,7 @@ export default class Dispatcher {
     async handle(ctx) {
         let pathname = this.getUrlPath(ctx.request);
         let method = ctx.request.method;
+
         for (let obj of this.urls) {
             if (!obj.matchAll && pathname == obj.path && method == obj.method) {
                 return await obj.handler(ctx);

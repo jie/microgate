@@ -32,7 +32,7 @@ function getApiOptions(ctx) {
     let apiUrl;
     let method = ctx.request.method;
     let contentType = ctx.request.header['content-type'];
-    console.log('contentType: ', contentType)
+
     switch (method) {
         case 'GET':
             apiParams = qs.parse(parseurl(ctx.request).query);
