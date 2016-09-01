@@ -1,7 +1,7 @@
 import React from 'react';
-import AppHeaderBar from '../components/header';
-import SideList from '../components/sidebar';
-import BaseReactComponent from '../components/base';
+import AppHeaderBar from '../../components/header';
+import SideList from '../../components/sidebar';
+import BaseReactComponent from '../../components/base';
 
 
 export default class MainApp extends BaseReactComponent {

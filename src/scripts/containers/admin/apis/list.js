@@ -4,11 +4,11 @@ import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
-import NotifyBar from '../../components/NotifyBar'
+import NotifyBar from '../../../components/NotifyBar'
+import BaseReactComponent from '../../../components/base'
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 
-import BaseReactComponent from '../../components/base'
 
 export default class ApisListApp extends BaseReactComponent {
 

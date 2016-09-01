@@ -6,9 +6,9 @@ import Divider from 'material-ui/Divider'
 import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
 import SelectField from 'material-ui/SelectField';
-import GroupTextField from '../../components/groupTextField'
-import NotifyBar from '../../components/NotifyBar'
-import BaseReactComponent from '../../components/base'
+import GroupTextField from '../../../components/groupTextField'
+import NotifyBar from '../../../components/NotifyBar'
+import BaseReactComponent from '../../../components/base'
 import axios from 'axios'
 
 const HeaderKeyDataSource = [

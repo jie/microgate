@@ -20,6 +20,20 @@ export default [{
     }
 },{
     method: 'POST',
+    path: '/portal/rest/account/login',
+    matchAll: true,
+    handler: async function(ctx) {
+        console.log(ctx.body);
+        return JSON.stringify({
+            entities:{
+                user: {username: 'zhouyang', id: 1},
+                cookieName: 'microgate',
+                sessionId: '123456789'
+            }
+        })
+    }
+},{
+    method: 'POST',
     path: '/portal/rest/apis/create',
     matchAll: true,
     handler: async function(ctx) {

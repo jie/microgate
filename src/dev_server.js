@@ -26,6 +26,16 @@ new WebpackDevServer(webpack(config), {
             // ignorePath: true,
             changeOrigin: true,
             secure: false
+        },
+        "/portal/rest/account/login": {
+            target: {
+                host: "127.0.0.1",
+                protocol: 'http:',
+                port: 8000
+            },
+            // ignorePath: true,
+            changeOrigin: true,
+            secure: false
         }
     }
 }).listen(5000, 'localhost', function(err) {
