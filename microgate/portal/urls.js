@@ -1,11 +1,12 @@
 import settings from '../settings';
 import redis from 'redis';
 import coRedis from "co-redis";
+import AccountService from './service/account';
+import ApiService from './service/api';
 
 let redisClient = redis.createClient(settings.settings.redis);
 let coRedisClient = coRedis(redisClient);
-let apiMethodMapKey = `${settings.settings.RedisKeyPrefix}:methodsMap`;
-let apiAddressMapKey = `${settings.settings.RedisKeyPrefix}:apiAddressMapKey`;
+
 
 redisClient.on("error", function (err) {
     console.log("Redis Error "+ err);
@@ -23,13 +24,36 @@ export default [{
     path: '/portal/rest/account/login',
     matchAll: true,
     handler: async function(ctx) {
-        console.log(ctx.body);
+        let accountService = new AccountService(settings.settings.RedisKeyPrefix)
+        let result = await accountService.login(ctx.request.body.username, ctx.request.body.password)
+        if(!result.success) {
+            ctx.throw(result.message, 400)
+        }
+        console.log('sessionId: ', result.sessionId)
         return JSON.stringify({
-            entities:{
-                user: {username: 'zhouyang', id: 1},
-                cookieName: 'microgate',
-                sessionId: '123456789'
-            }
+            user: {
+                username: result.userinfo.username,
+                createAt: result.userinfo.createAt,
+                updateAt: result.userinfo.updateAt,
+                type: result.userinfo.type
+            },
+            cookieName: 'microgate',
+            sessionId: result.sessionId
+        })
+    }
+},{
+    method: 'POST',
+    path: '/portal/rest/account/logout',
+    handler: async function(ctx) {
+        let accountService = new AccountService(settings.settings.RedisKeyPrefix)
+        let result = await accountService.logout(ctx.request.body.sessionId)
+        console.log('result: ', result);
+        if(!result.success) {
+            ctx.throw(result.message, 400)
+        }
+        return JSON.stringify({
+            success: true,
+            message: 'logout successful'
         })
     }
 },{
@@ -44,8 +68,12 @@ export default [{
             'body': body.bodyItems,
             'header': body.headerItems
         }
-        let redisRes = redisClient.set(apiMethodMapKey, JSON.stringify(settings.settings.methodsMap));
-        return JSON.stringify({'success': true, 'message': 'ok'})
+        let apiService = new ApiService(settings.settings.RedisKeyPrefix)
+        let result = await apiService.create(settings.settings.methodsMap)
+        if(!result.success) {
+            ctx.throw(result.message, 400)
+        }
+        return JSON.stringify(result)
     }
 },{
     method: 'POST',
@@ -66,7 +94,27 @@ export default [{
     path: '/portal/rest/apis/query',
     matchAll: true,
     handler: async function(ctx) {
-        console.log(ctx.request.search)
-        return await coRedisClient.get(apiMethodMapKey);
+        let apiService = new ApiService(settings.settings.RedisKeyPrefix)
+        let result = await apiService.query(ctx.body.search)
+        if(!result.success) {
+            ctx.throw(result.message, 400)
+        }
+        return JSON.stringfiy(result);
+    }
+},{
+    method: 'POST',
+    path: '/portal/rest/user/create',
+    matchAll: true,
+    handler: async function(ctx) {
+        let accountService = new AccountService(settings.settings.RedisKeyPrefix)
+        console.log(ctx.request.body)
+        let result = await accountService.create(ctx.request.body.username, {
+            password: ctx.request.body.password
+        })
+        if(!result.success) {
+            ctx.throw(result.message, 400)
+        }
+
+        return JSON.stringify(result)
     }
 }]

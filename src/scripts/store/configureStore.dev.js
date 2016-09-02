@@ -3,9 +3,10 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import api from '../middleware/api'
 import rootReducer from '../reducers'
+// import { routerMiddleware } from 'react-router-redux'
 import DevTools from '../containers/DevTools'
 
-export default function configureStore(preloadedState) {
+export default function configureStore(preloadedState, browserHistory) {
   const store = createStore(
     rootReducer,
     preloadedState,

@@ -12,16 +12,15 @@ import BaseReactComponent from '../../components/base'
 export default class AccountLoginApp extends BaseReactComponent {
 
     static defaultProps = {
-        isLogin: false
+        authenticated: false
     };
 
-    static propTypes = {
-        isLogin: PropTypes.bool,
-    };
+    static contextTypes = {
+        router: React.PropTypes.object
+    }
 
     constructor(props) {
         super(props)
-        // this.handleInputChange = this.handleInputChange.bind(this)
         this.handleUserLogin = this.handleUserLogin.bind(this)
     }
 
@@ -30,10 +29,11 @@ export default class AccountLoginApp extends BaseReactComponent {
     }
 
     handleUserLogin(e) {
-        // console.log('handleUserLogin:', this.props)
+        console.log('this.refs.usernameInput: ', this.refs.usernameInput)
         this.props.loginUser({
-            username: this.refs.usernameInput.value,
-            password: this.refs.passwordInput.value
+            username: this.refs.usernameInput.input.value,
+            password: this.refs.passwordInput.input.value,
+            router: this.context.router
         })
     }
 
@@ -47,9 +47,7 @@ export default class AccountLoginApp extends BaseReactComponent {
                 <TextField ref="passwordInput" name="password" fullWidth={ true } hintText='Password' floatingLabelText='Password' />
               </div>
               <div className='LoginButton'>
-                <RaisedButton label='Signin' primary={ true } onTouchTap={
-                    this.handleUserLogin
-                }/>
+                <RaisedButton label='Signin' primary={ true } onTouchTap={this.handleUserLogin} />
               </div>
             </Paper>
           </MuiThemeProvider>
@@ -59,14 +57,14 @@ export default class AccountLoginApp extends BaseReactComponent {
 
 AccountLoginApp.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  authenticated: PropTypes.bool,
 }
-
 
 
 function mapStateToProps(state, ownProps) {
     // console.log('mapStateToProps:', state, ownProps)
     return {
-        isLogin: state.isLogin
+        authenticated: ownProps.authenticated
     }
 }
 

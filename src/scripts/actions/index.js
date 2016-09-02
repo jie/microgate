@@ -1,37 +1,21 @@
-import { CALL_API, Schemas } from '../middleware/api'
+import {
+    loginUser,
+    logoutUser,
+    LOGIN_ACTION_TYPE,
+    LOGOUT_ACTION_TYPE
+} from './account';
 
-export const LOGIN_REQUEST = 'LOGIN_REQUEST'
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
-export const LOGIN_FAILURE = 'LOGIN_FAILURE'
-
-// Fetches a single user from Github API.
-// Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchUser(login) {
-    let body = JSON.stringify({
-        "username": login.username,
-        "password": login.password
-    })
-    return {
-        [CALL_API]: {
-            method: "POST",
-            types: [ LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE ],
-            endpoint: `/portal/rest/account/login`,
-            schema: Schemas.USER,
-            settings: {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: body
-            }
-        }
-    }
-}
+import {
+    createAnAPI,
+    CREATEAPI_ACTION_TYPE
+} from './admin/api';
 
 
-export function loginUser(login, requiredFields = []) {
-    return (dispatch, getState) => {
-        return dispatch(fetchUser(login))
-    }
+module.exports = {
+    loginUser: loginUser,
+    logoutUser: logoutUser,
+    createAnAPI: createAnAPI,
+    LOGIN_ACTION_TYPE: LOGIN_ACTION_TYPE,
+    LOGOUT_ACTION_TYPE: LOGOUT_ACTION_TYPE,
+    CREATEAPI_ACTION_TYPE: CREATEAPI_ACTION_TYPE
 }

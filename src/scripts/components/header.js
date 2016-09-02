@@ -12,23 +12,19 @@ import BaseReactComponent from './base';
 export default class AppHeaderBar extends BaseReactComponent {
     static propTypes = {
         appTitle: React.PropTypes.string.isRequired,
+        onSignOut: React.PropTypes.func
     };
-  render() {
+    render() {
       return (
           <AppBar
                 title={ this.props.appTitle }
                 iconElementRight={
                     <IconMenu
-                        iconButtonElement={
-                            <IconButton>
-                                <MoreVertIcon />
-                                </IconButton>
-                            }
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-                            <MenuItem primaryText="Refresh" />
-                            <MenuItem primaryText="Help" />
-                            <MenuItem primaryText="Sign out" />
+                        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem primaryText="Help" />
+                        <MenuItem primaryText="Signout" onTouchTap={this.props.onSignOut} />
                     </IconMenu>
                 }
             />

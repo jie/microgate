@@ -4,22 +4,19 @@ import 'isomorphic-fetch'
 
 function callApi(endpoint, settings, schema) {
   // const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint
-  const fullUrl = endpoint;
+    const fullUrl = endpoint;
 
-  return fetch(fullUrl, settings)
-    .then(response =>
-      response.json().then(json => ({ json, response }))
-    ).then(({ json, response }) => {
-      if (!response.ok) {
-        return Promise.reject(json)
-      }
+    return fetch(fullUrl, settings)
+        .then(function(response) {
+            if(!response.ok) {
+                return {
+                    message: `Error: ${response.body} || ${response.statusText}`
+                }
+            }
+            return response.json();
 
-    //   const camelizedJson = camelizeKeys(json)
-
-      return Object.assign({},
+        // const camelizedJson = camelizeKeys(json)
         // normalize(camelizedJson, schema)
-        json
-      )
     })
 }
 
@@ -28,8 +25,13 @@ const userSchema = new Schema('user', {
     idAttribute: user => user.userId
 })
 
+const apiSchema = new Schema('api', {
+    idAttribute: api => api.userId
+})
+
 export const Schemas = {
-    USER: userSchema
+    USER: userSchema,
+    API: apiSchema
 }
 
 export const CALL_API = Symbol('Call API')

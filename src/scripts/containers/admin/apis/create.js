@@ -7,8 +7,9 @@ import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
 import SelectField from 'material-ui/SelectField';
 import GroupTextField from '../../../components/groupTextField'
-import NotifyBar from '../../../components/NotifyBar'
 import BaseReactComponent from '../../../components/base'
+import { createAnAPI } from '../../../actions'
+import { connect } from 'react-redux'
 import axios from 'axios'
 
 const HeaderKeyDataSource = [
@@ -37,9 +38,7 @@ export default class ApiCreateApp extends BaseReactComponent {
         this.state = {
             headerItems: [],
             bodyItems: [],
-            formData: {},
-            notifyBarState: false,
-            notifyBarMessage: ''
+            formData: {}
         };
     };
 
@@ -60,12 +59,13 @@ export default class ApiCreateApp extends BaseReactComponent {
         let data = this.state.formData;
         data.headerItems = this.state.headerItems;
         data.bodyItems = this.state.bodyItems;
-        axios.post('/portal/rest/apis/create', data).then(function (response) {
-            console.log('success:', response);
-        }).catch(function (error) {
-            console.log('error', error);
-            self.setState({notifyBarState: true, notifyBarMessage: error.message})
-        });
+        // axios.post('/portal/rest/apis/create', data).then(function (response) {
+        //     console.log('success:', response);
+        // }).catch(function (error) {
+        //     console.log('error', error);
+        //     self.setState({notifyBarState: true, notifyBarMessage: error.message})
+        // });
+        this.props.createAnAPI(data)
     };
 
     handleTextFieldChange = (e) => {
@@ -79,7 +79,6 @@ export default class ApiCreateApp extends BaseReactComponent {
     render() {
         return (
             <div className="formPaper">
-                <NotifyBar open={this.state.notifyBarState} message={this.state.notifyBarMessage}/>
                 <Paper className="flatPaper">
                     <TextField
                         name="name"
@@ -164,3 +163,15 @@ export default class ApiCreateApp extends BaseReactComponent {
         );
     }
 }
+
+
+
+function mapStateToProps(state, ownProps) {
+    return {
+        authenticated: ownProps.authenticated
+    }
+}
+
+export default connect(mapStateToProps, {
+    createAnAPI
+})(ApiCreateApp)
