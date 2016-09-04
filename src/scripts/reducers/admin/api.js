@@ -1,6 +1,6 @@
-import {CREATEAPI_ACTION_TYPE} from '../../actions'
+import { CREATEAPI_ACTION_TYPE, LOGIN_ACTION_TYPE } from '../../actions'
 import merge from 'lodash/merge'
-import cookie from '../utils/cookie'
+import cookie from '../../utils/cookie'
 
 // export default function loginReducer(state = {'authenticated': false}, action) {
 //     const { type, data } = action;
@@ -19,3 +19,16 @@ import cookie from '../utils/cookie'
 //
 //     return state
 // }
+
+function notifyBarReducer(state = {
+    notifyBarMessage: ''
+  }, action) {
+  const {type, data} = action;
+  let res = action.response;
+  switch (type) {
+    case LOGIN_ACTION_TYPE.LOGIN_FAILURES:
+      state.notifyBarMessage = res.message
+      break;
+  }
+  return state
+}

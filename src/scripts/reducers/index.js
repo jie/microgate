@@ -1,13 +1,14 @@
 import { routerReducer as routing } from 'react-router-redux'
 import { combineReducers } from 'redux'
-import loginReducer from './account'
-import logoutReducer from './account'
-
+import { loginReducer, logoutReducer } from './account'
+import { notifyBarReducer } from './admin/api'
 
 
 const rootReducer = combineReducers({
-    loginReducer,
-    routing
+  loginReducer,
+  logoutReducer,
+  notifyBarReducer,
+  routing
 })
 
 export default rootReducer

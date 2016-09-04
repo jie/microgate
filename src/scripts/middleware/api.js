@@ -1,37 +1,42 @@
+
 import { Schema, arrayOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
 
 function callApi(endpoint, settings, schema) {
   // const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint
-    const fullUrl = endpoint;
+  const fullUrl = endpoint;
 
-    return fetch(fullUrl, settings)
-        .then(function(response) {
-            if(!response.ok) {
-                return {
-                    message: `Error: ${response.body} || ${response.statusText}`
-                }
-            }
-            return response.json();
-
-        // const camelizedJson = camelizeKeys(json)
-        // normalize(camelizedJson, schema)
-    })
+  // return fetch(fullUrl, settings).then(response => response.json().then(json => ({
+  //   json,
+  //   response
+  // }))
+  // ).then(({json, response}) => {
+  //   if (!response.ok) {
+  //     return Promise.reject(json)
+  //   }
+  //   return Object.assign({}, json)
+  // })
+  return fetch(fullUrl, settings).then(function(response) {
+    if (!response.ok) {
+      let msg = response.text()
+      console.log('msg: ', msg)
+      let errMsg = `Error: status_type: ${response.statusText} ${msg}`
+      return Promise.reject(errMsg)
+    }
+    return response.json()
+  }).then(function(json) {
+    return Object.assign({}, json)
+  })
 }
 
 
 const userSchema = new Schema('user', {
-    idAttribute: user => user.userId
-})
-
-const apiSchema = new Schema('api', {
-    idAttribute: api => api.userId
+  idAttribute: user => user.userId
 })
 
 export const Schemas = {
-    USER: userSchema,
-    API: apiSchema
+  USER: userSchema
 }
 
 export const CALL_API = Symbol('Call API')
@@ -42,8 +47,8 @@ export default store => next => action => {
     return next(action)
   }
 
-  let { endpoint, settings } = callAPI
-  const { schema, types } = callAPI
+  let {endpoint, settings} = callAPI
+  const {schema, types} = callAPI
 
   if (typeof endpoint === 'function') {
     endpoint = endpoint(store.getState())
@@ -68,8 +73,10 @@ export default store => next => action => {
     return finalAction
   }
 
-  const [ requestType, successType, failureType ] = types
-  next(actionWith({ type: requestType }))
+  const [requestType, successType, failureType] = types
+  next(actionWith({
+    type: requestType
+  }))
 
   return callApi(endpoint, settings, schema).then(
     response => next(actionWith({
@@ -78,7 +85,7 @@ export default store => next => action => {
     })),
     error => next(actionWith({
       type: failureType,
-      error: error.message || 'System Error'
+      error: error || 'System Error'
     }))
   )
 }

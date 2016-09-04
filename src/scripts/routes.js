@@ -1,3 +1,4 @@
+import cookie from './utils/cookie'
 import React from 'react'
 import { Router, Route } from 'react-router'
 import AccountLoginApp from './containers/account'
@@ -20,17 +21,26 @@ ApplicationApp.title = 'ApplicationApp';
 ApplicationApp.path = '/portal/admin/application';
 
 
+const authenticate = function(next, replace, callback) {
+  const authenticated = !!cookie.get('microgate')
+  if (!authenticated && next.location.pathname != '/portal/account/login') {
+    replace('/portal/account/login')
+  }
+  callback()
+}
+
+
 export default (
-    <Router>
-      <Route path={ MainApp.path } component={ MainApp }>
-        <Route path={ DashboardApp.path } component={ DashboardApp } />
-        <Route path={ ApiCreateApp.path } component={ ApiCreateApp } />
-        <Route path={ ApisListApp.path } component={ ApisListApp } />
-        <Route path={ AddressApp.path } component={ AddressApp } />
-        <Route path={ ApplicationApp.path } component={ ApplicationApp } />
-      </Route>
-      <Route>
-        <Route path={ AccountLoginApp.path } component={ AccountLoginApp } />
-      </Route>
-    </Router>
+<Router>
+  <Route path={ MainApp.path } component={ MainApp } onEnter={ authenticate }>
+    <Route path={ DashboardApp.path } component={ DashboardApp } />
+    <Route path={ ApiCreateApp.path } component={ ApiCreateApp } />
+    <Route path={ ApisListApp.path } component={ ApisListApp } />
+    <Route path={ AddressApp.path } component={ AddressApp } />
+    <Route path={ ApplicationApp.path } component={ ApplicationApp } />
+  </Route>
+  <Route>
+    <Route path={ AccountLoginApp.path } component={ AccountLoginApp } />
+  </Route>
+</Router>
 )

@@ -6,32 +6,31 @@ import BaseReactComponent from './base';
 
 export default class NotifyBar extends React.Component {
 
-    static defaultProps = {
-        open: false,
-        message: ''
-    };
+  static defaultProps = {
+    message: ''
+  };
 
-    static propTypes = {
-        open: React.PropTypes.bool,
-        message: React.PropTypes.string
-    };
+  static propTypes = {
+    message: React.PropTypes.string
+  };
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({message: nextProps.message, open: nextProps.open});
-    }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      message: nextProps.message,
+    });
+  }
 
   constructor(props) {
     super(props);
     this.state = {
       autoHideDuration: 4000,
       message: this.props.message,
-      open: this.props.open,
     };
   }
 
   handleActionTouchTap = () => {
     this.setState({
-      open: false,
+      message: '',
     });
   };
 
@@ -44,22 +43,21 @@ export default class NotifyBar extends React.Component {
 
   handleRequestClose = () => {
     this.setState({
-      open: false,
+      message: '',
     });
   };
 
   render() {
+    let status;
+    if (this.state.message) {
+      status = true;
+    } else {
+      status = false;
+    }
     return (
       <div>
-        <Snackbar
-          open={this.state.open}
-          message={this.state.message}
-          action="confirm"
-          autoHideDuration={this.state.autoHideDuration}
-          onActionTouchTap={this.handleActionTouchTap}
-          onRequestClose={this.handleRequestClose}
-        />
+        <Snackbar open={ status } message={ this.state.message } action="confirm" autoHideDuration={ this.state.autoHideDuration } onActionTouchTap={ this.handleActionTouchTap } onRequestClose={ this.handleRequestClose } />
       </div>
-    );
+      );
   }
 }
