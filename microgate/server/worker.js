@@ -10,9 +10,10 @@ import dateutils from '../utils/dateutils'
 import serve from 'koa-static-server'
 import settings from '../settings';
 import { orm, config } from '../model'
+
+
 const app = new Koa();
 const staticPath = path.join(__dirname, '/../../public');
-
 
 
 app.use(serve({
@@ -69,7 +70,6 @@ app.wait_socket = function() {
 
   return server.listen.apply(server, arguments);
 }
-
 
 
 orm.initialize(config, function(err, models) {

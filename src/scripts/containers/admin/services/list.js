@@ -6,6 +6,7 @@ import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
 import { connect } from 'react-redux'
+import { viewAllService } from '../../../actions'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
