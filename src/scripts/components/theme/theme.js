@@ -1,20 +1,6 @@
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import {
-  cyan500,
-  cyan700,
-  pinkA200,
-  grey100,
-  grey300,
-  grey400,
-  grey500,
-  white,
-  darkBlack,
-  fullBlack,
-  cyan200
-} from 'material-ui/styles/colors';
-import {
-  fade
-} from 'material-ui/utils/colorManipulator';
+import { cyan500, cyan700, pinkA200, grey100, grey300, grey400, grey500, white, darkBlack, fullBlack, cyan200 } from 'material-ui/styles/colors';
+import { fade } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
 
 const muiTheme = getMuiTheme({
@@ -38,7 +24,11 @@ const muiTheme = getMuiTheme({
   },
   appBar: {
     color: cyan200
-  }
+  },
+  snackbar: {
+    textColor: darkBlack,
+    actionColor: fullBlack
+  },
 })
 
 export default muiTheme;

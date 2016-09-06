@@ -1,62 +1,75 @@
 import React from 'react';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import BaseReactComponent from './base';
+import { green500, orange500, deepOrange900 } from 'material-ui/styles/colors';
+const styles = {
+  info: {
+    backgroundColor: green500
+  },
+  warn: {
+    backgroundColor: orange500
+  },
+  error: {
+    backgroundColor: deepOrange900
+  }
+}
 
 export default class NotifyBar extends React.Component {
 
-  static defaultProps = {
-    message: ''
-  };
-
   static propTypes = {
-    message: React.PropTypes.string
+    status: React.PropTypes.object,
+    handleActionTouchTap: React.PropTypes.func
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      message: nextProps.message,
-    });
+  static defaultProps = {
+    status: {
+      open: false,
+      message: '',
+      type: 'info'
+    }
   }
 
   constructor(props) {
     super(props);
     this.state = {
       autoHideDuration: 4000,
-      message: this.props.message,
+      status: props.status
     };
   }
 
   handleActionTouchTap = () => {
+    console.log('handleActionTouchTap::::')
     this.setState({
-      message: '',
-    });
-  };
-
-  handleChangeDuration = (event) => {
-    const value = event.target.value;
-    this.setState({
-      autoHideDuration: value.length > 0 ? parseInt(value) : 0,
+      status: {
+        open: false,
+        message: '',
+      }
     });
   };
 
   handleRequestClose = () => {
+    console.log('handleRequestClose::::')
     this.setState({
-      message: '',
+      status: {
+        open: false,
+        message: '',
+      }
     });
   };
 
+
+  componentWillReceiveProps(nextProps) {
+    console.log('nextProps:', nextProps)
+    this.setState({
+      status: nextProps.status
+    })
+  }
+
   render() {
-    let status;
-    if (this.state.message) {
-      status = true;
-    } else {
-      status = false;
-    }
     return (
       <div>
-        <Snackbar open={ status } message={ this.state.message } action="confirm" autoHideDuration={ this.state.autoHideDuration } onActionTouchTap={ this.handleActionTouchTap } onRequestClose={ this.handleRequestClose } />
+        <Snackbar bodyStyle={ styles[this.state.status.type] } open={ this.state.status.open } message={ this.state.status.message } action={ 'close' } onRequestClose={ this.handleRequestClose } onActionTouchTap={ this.props.handleActionTouchTap } />
       </div>
       );
   }

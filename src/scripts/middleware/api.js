@@ -7,26 +7,28 @@ function callApi(endpoint, settings, schema) {
   // const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint
   const fullUrl = endpoint;
 
-  // return fetch(fullUrl, settings).then(response => response.json().then(json => ({
-  //   json,
-  //   response
-  // }))
-  // ).then(({json, response}) => {
-  //   if (!response.ok) {
-  //     return Promise.reject(json)
-  //   }
-  //   return Object.assign({}, json)
-  // })
-  return fetch(fullUrl, settings).then(function(response) {
-    if (!response.ok) {
-      let msg = response.text()
-      console.log('msg: ', msg)
-      let errMsg = `Error: status_type: ${response.statusText} ${msg}`
-      return Promise.reject(errMsg)
+  function checkStatus(response) {
+    if (response.ok) {
+      return response
+    } else {
+      return response.text().then(function(text) {
+        throw new Error(text || response.statusText)
+      })
     }
+  }
+
+  function parseJSON(response) {
     return response.json()
-  }).then(function(json) {
-    return Object.assign({}, json)
+  }
+
+  return fetch(fullUrl, settings)
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(function(data) {
+      console.log('request succeeded with JSON response', data)
+      return Object.assign({}, data)
+    }).catch(function(error) {
+    return Promise.reject(error.message)
   })
 }
 

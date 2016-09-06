@@ -15,13 +15,13 @@ class MainApp extends BaseReactComponent {
   constructor(props) {
     super(props);
     this.state = {
-      notifyBarMessage: ''
+      notifyStatus: {
+        open: false,
+        type: 'info',
+        message: ''
+      }
     }
     this.handleSignOut = this.handleSignOut.bind(this)
-  }
-
-  static defaultProps = {
-    notifyBarMessage: ''
   }
 
   static contextTypes = {
@@ -51,6 +51,22 @@ class MainApp extends BaseReactComponent {
     this.context.router.push(Settings.pages.login)
   };
 
+  handleNotifyActionTouchTap = () => {
+    this.setState({
+      notifyStatus: {
+        open: false,
+        message: ''
+      }
+    })
+  };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      notifyStatus: nextProps.notifyStatus
+    })
+  }
+
+
   render() {
     // const {
     //   location,
@@ -68,7 +84,7 @@ class MainApp extends BaseReactComponent {
             { this.props.children }
           </div>
         </div>
-        <NotifyBar message={ this.state.notifyBarMessage } />
+        <NotifyBar status={ this.state.notifyStatus } handleActionTouchTap={ this.handleNotifyActionTouchTap } />
       </div>
     )
   }
@@ -78,7 +94,7 @@ class MainApp extends BaseReactComponent {
 MainApp.propTypes = {
   children: React.PropTypes.node,
   location: React.PropTypes.object,
-  notifyBarMessage: React.PropTypes.string,
+  notifyStatus: React.PropTypes.object,
   logoutUser: React.PropTypes.func.isRequired
 }
 
@@ -86,8 +102,10 @@ MainApp.propTypes = {
 
 
 function mapStateToProps(state, ownProps) {
+  let {adminNotifyReducer} = state
+  console.log('adminNotifyReducer:', adminNotifyReducer)
   return {
-    notifyBarMessage: ownProps.notifyBarMessage
+    notifyStatus: adminNotifyReducer.notifyStatus
   }
 }
 

@@ -9,6 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import BaseReactComponent from '../../components/base'
 import NotifyBar from '../../components/notify'
+import Snackbar from 'material-ui/Snackbar';
 
 class AccountLoginApp extends BaseReactComponent {
 
@@ -17,16 +18,25 @@ class AccountLoginApp extends BaseReactComponent {
   }
 
   static defaultProps = {
-    notifyMessage: '',
+    notifyStatus: {
+      open: false,
+      message: '',
+      type: 'info'
+    }
   }
 
   constructor(props) {
     super(props)
     this.handleUserLogin = this.handleUserLogin.bind(this)
+    this.state = {
+      notifyStatus: props.notifyStatus
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps: ', nextProps)
+    this.setState({
+      notifyStatus: nextProps.notifyStatus
+    })
   }
 
   handleUserLogin(e) {
@@ -37,6 +47,15 @@ class AccountLoginApp extends BaseReactComponent {
       router: this.context.router
     })
   }
+
+  handleNotifyActionTouchTap = () => {
+    this.setState({
+      notifyStatus: {
+        open: false,
+        message: ''
+      }
+    })
+  };
 
   render() {
     return (
@@ -50,7 +69,7 @@ class AccountLoginApp extends BaseReactComponent {
           <div className='LoginButton'>
             <RaisedButton label='Signin' primary={ true } onTouchTap={ this.handleUserLogin } />
           </div>
-          <NotifyBar message={ this.props.notifyMessage } />
+          <NotifyBar status={ this.state.notifyStatus } handleActionTouchTap={ this.handleNotifyActionTouchTap } />
         </Paper>
       </MuiThemeProvider>
       );
@@ -59,15 +78,15 @@ class AccountLoginApp extends BaseReactComponent {
 
 AccountLoginApp.propTypes = {
   loginUser: PropTypes.func.isRequired,
-  notifyMessage: PropTypes.string
+  notifyStatus: PropTypes.object
 }
 
 
 function mapStateToProps(state, ownProps) {
-  console.log('mapStateToProps:', state)
   let {loginReducer} = state
+  console.log('loginReducer:', loginReducer)
   return {
-    notifyMessage: loginReducer.notifyBarMessage
+    notifyStatus: loginReducer.notifyStatus
   }
 }
 

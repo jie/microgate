@@ -29,7 +29,7 @@ function fetchUser(authInfo) {
         LOGIN_ACTION_TYPE.LOGIN_SUCCESS,
         LOGIN_ACTION_TYPE.LOGIN_FAILURE
       ],
-      endpoint: Settings.apis.login,
+      endpoint: Settings.api.login,
       schema: Schemas.USER,
       settings: {
         method: "POST",
@@ -71,7 +71,7 @@ function _logoutUser(logoutInfo) {
         LOGOUT_ACTION_TYPE.LOGOUT_SUCCESS,
         LOGOUT_ACTION_TYPE.LOGOUT_FAILURE
       ],
-      endpoint: Settings.apis.logout,
+      endpoint: Settings.api.logout,
       schema: Schemas.USER,
       settings: {
         method: "POST",

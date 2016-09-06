@@ -8,7 +8,7 @@ import Checkbox from 'material-ui/Checkbox'
 import SelectField from 'material-ui/SelectField';
 import GroupTextField from '../../../components/groupTextField'
 import BaseReactComponent from '../../../components/base'
-import { createAnAPI, viewAnApi } from '../../../actions'
+import { createService, viewService } from '../../../actions'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -31,7 +31,7 @@ const HeaderValDataSource = [
   'multipart/form-data',
 ]
 
-class ApiCreateApp extends BaseReactComponent {
+class ServicesCreateApp extends BaseReactComponent {
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
   };
@@ -41,12 +41,14 @@ class ApiCreateApp extends BaseReactComponent {
       header: [],
       body: [],
       name: '',
-      path: '',
+      port: '',
+      host: '',
       timeout: '',
       remark: '',
       isInner: false,
       isSign: false,
-      isEnable: true
+      isEnable: true,
+      isForwarding: false
     }
   }
 
@@ -80,7 +82,8 @@ class ApiCreateApp extends BaseReactComponent {
   };
 
   handleSubmitForm = (e) => {
-    this.props.createAnAPI(this.state.entity)
+    console.log('handleSubmitForm:', this.state.entity)
+    this.props.createService(this.state.entity)
   };
 
   handleTextFieldChange = (e) => {
@@ -102,7 +105,7 @@ class ApiCreateApp extends BaseReactComponent {
 
   handlLoadData(query) {
     if (query.name) {
-      this.props.viewAnApi(query)
+      this.props.viewService(query)
     }
   };
 
@@ -113,6 +116,7 @@ class ApiCreateApp extends BaseReactComponent {
   };
 
   componentWillReceiveProps(nextProps) {
+    console.log('nextProps.entity:', nextProps.entity)
     this.setState({
       entity: nextProps.entity
     })
@@ -126,13 +130,19 @@ class ApiCreateApp extends BaseReactComponent {
             onChange={ this.handleTextFieldChange }
             value={ this.state.entity.name }
             fullWidth={ true }
-            floatingLabelText="API Method Name" />
+            floatingLabelText="Name" />
           <br />
-          <TextField name="path"
+          <TextField name="host"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.path }
+            value={ this.state.entity.host }
             fullWidth={ true }
-            floatingLabelText="API Path" />
+            floatingLabelText="Host" />
+          <br />
+          <TextField name="port"
+            onChange={ this.handleTextFieldChange }
+            value={ this.state.entity.port }
+            fullWidth={ true }
+            floatingLabelText="Port" />
           <br />
           <TextField name="timeout"
             onChange={ this.handleTextFieldChange }
@@ -143,7 +153,7 @@ class ApiCreateApp extends BaseReactComponent {
           <TextField name="remark"
             onChange={ this.handleTextFieldChange }
             value={ this.state.entity.remark }
-            floatingLabelText="API Remarks"
+            floatingLabelText="Remarks"
             multiLine={ true }
             fullWidth={ true }
             rows={ 4 } />
@@ -161,7 +171,7 @@ class ApiCreateApp extends BaseReactComponent {
           <br />
           <Checkbox name="isInner"
             onCheck={ this.handleCheckboxChange }
-            label="Inner API"
+            label="Inner Service"
             checked={ this.state.entity.isInner } />
           <br />
           <Checkbox name="isSign"
@@ -169,10 +179,10 @@ class ApiCreateApp extends BaseReactComponent {
             label="Verify Signature"
             checked={ this.state.entity.isSign } />
           <br />
-          <Checkbox name="isEnable"
+          <Checkbox name="isForwarding"
             onCheck={ this.handleCheckboxChange }
-            label="Enabled"
-            checked={ this.state.entity.isEnable } />
+            label="Just forwarding request"
+            checked={ this.state.entity.isForwarding } />
           <br />
           <Divider />
           <br />
@@ -188,7 +198,7 @@ class ApiCreateApp extends BaseReactComponent {
 }
 
 
-ApiCreateApp.propTypes = {
+ServicesCreateApp.propTypes = {
   entity: PropTypes.object
 }
 
@@ -202,6 +212,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps, {
-  createAnAPI,
-  viewAnApi
-})(ApiCreateApp)
+  createService,
+  viewService
+})(ServicesCreateApp)

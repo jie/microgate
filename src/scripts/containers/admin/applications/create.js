@@ -31,71 +31,71 @@ const HeaderValDataSource = [
   'multipart/form-data',
 ]
 
-class ApiCreateApp extends BaseReactComponent {
+class ApplicationsCreateApp extends BaseReactComponent {
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
   };
 
   static defaultProps = {
-    entity: {
+    apiService: {
       header: [],
       body: [],
       name: '',
-      path: '',
+      host: '',
       timeout: '',
       remark: '',
       isInner: false,
-      isSign: false,
-      isEnable: true
+      isSign: false
     }
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      entity: props.entity
+      apiService: props.apiService
     };
   };
 
   handleAppendHeaderItem = (e) => {
-    let entity = this.state.entity;
-    if (!this.state.entity.header) {
-      entity.header = [];
+    let apiService = this.state.apiService;
+    if (!this.state.apiService.header) {
+      apiService.header = [];
     }
-    entity.header.push({})
+    apiService.header.push({})
     this.setState({
-      entity: entity
+      apiService: apiService
     })
   };
 
   handleAppendBodyItem = (e) => {
-    let entity = this.state.entity;
-    if (!this.state.entity.body) {
-      entity.body = [];
+    let apiService = this.state.apiService;
+    if (!this.state.apiService.body) {
+      apiService.body = [];
     }
-    entity.body.push({})
+    apiService.body.push({})
     this.setState({
-      entity: entity
+      apiService: apiService
     })
   };
 
   handleSubmitForm = (e) => {
-    this.props.createAnAPI(this.state.entity)
+    console.log('handleSubmitForm:', this.state.apiService)
+    this.props.createAnAPI(this.state.apiService)
   };
 
   handleTextFieldChange = (e) => {
-    let entity = this.state.entity;
-    entity[e.target.name] = e.target.value
+    let apiService = this.state.apiService;
+    apiService[e.target.name] = e.target.value
     this.setState({
-      entity: entity
+      apiService: apiService
     })
   }
 
   handleCheckboxChange = (e) => {
-    let entity = this.state.entity;
-    entity[e.target.name] = e.target.checked
+    let apiService = this.state.apiService;
+    apiService[e.target.name] = e.target.checked
     this.setState({
-      entity: entity
+      apiService: apiService
     })
 
   };
@@ -113,8 +113,9 @@ class ApiCreateApp extends BaseReactComponent {
   };
 
   componentWillReceiveProps(nextProps) {
+    console.log('nextProps.apiService:', nextProps.apiService)
     this.setState({
-      entity: nextProps.entity
+      apiService: nextProps.apiService
     })
   }
 
@@ -124,26 +125,26 @@ class ApiCreateApp extends BaseReactComponent {
         <Paper className="flatPaper">
           <TextField name="name"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.name }
+            value={ this.state.apiService.name }
             fullWidth={ true }
-            floatingLabelText="API Method Name" />
+            floatingLabelText="Name" />
           <br />
-          <TextField name="path"
+          <TextField name="host"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.path }
+            value={ this.state.apiService.host }
             fullWidth={ true }
-            floatingLabelText="API Path" />
+            floatingLabelText="Host" />
           <br />
           <TextField name="timeout"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.timeout }
+            value={ this.state.apiService.timeout }
             fullWidth={ true }
             floatingLabelText="Request Timeout" />
           <br />
           <TextField name="remark"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.remark }
-            floatingLabelText="API Remarks"
+            value={ this.state.apiService.remark }
+            floatingLabelText="Remarks"
             multiLine={ true }
             fullWidth={ true }
             rows={ 4 } />
@@ -151,28 +152,28 @@ class ApiCreateApp extends BaseReactComponent {
           <GroupTextField groupType="HeaderItems"
             key="custom-header"
             title="Custom Headers"
-            fieldsList={ this.state.entity.header }
+            fieldsList={ this.state.apiService.header }
             dataKeySource={ HeaderKeyDataSource }
             dataValSource={ HeaderValDataSource } />
           <GroupTextField groupType="BodyItems"
             key="custom-body"
             title="Custom Body"
-            fieldsList={ this.state.entity.body } />
+            fieldsList={ this.state.apiService.body } />
           <br />
           <Checkbox name="isInner"
             onCheck={ this.handleCheckboxChange }
-            label="Inner API"
-            checked={ this.state.entity.isInner } />
+            label="Inner Service"
+            checked={ this.state.apiService.isInner } />
           <br />
           <Checkbox name="isSign"
             onCheck={ this.handleCheckboxChange }
             label="Verify Signature"
-            checked={ this.state.entity.isSign } />
+            checked={ this.state.apiService.isSign } />
           <br />
-          <Checkbox name="isEnable"
+          <Checkbox name="isForwarding"
             onCheck={ this.handleCheckboxChange }
-            label="Enabled"
-            checked={ this.state.entity.isEnable } />
+            label="Just forwarding request"
+            checked={ this.state.apiService.isForwarding } />
           <br />
           <Divider />
           <br />
@@ -188,20 +189,20 @@ class ApiCreateApp extends BaseReactComponent {
 }
 
 
-ApiCreateApp.propTypes = {
-  entity: PropTypes.object
+ApplicationsCreateApp.propTypes = {
+  apiService: PropTypes.object
 }
 
 
 
 function mapStateToProps(state, ownProps) {
-  let {detailViewReducer} = state
+  let {viewAnApiReducer} = state
   return {
-    entity: detailViewReducer.entity
+    apiService: viewAnApiReducer.apiService
   }
 }
 
 export default connect(mapStateToProps, {
   createAnAPI,
   viewAnApi
-})(ApiCreateApp)
+})(ApplicationsCreateApp)

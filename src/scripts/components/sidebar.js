@@ -20,10 +20,10 @@ import SupervisorIcon from 'material-ui/svg-icons/action/supervisor-account';
 
 const SelectableList = MakeSelectable(List);
 const style = {
-    paper: {
-        display: 'inline-block',
-        width: '100%'
-    }
+  paper: {
+    display: 'inline-block',
+    width: '100%'
+  }
 
 };
 export default class SideList extends BaseReactComponent {
@@ -51,16 +51,51 @@ export default class SideList extends BaseReactComponent {
   render() {
 
     const {location, onChangeList, } = this.props;
+    let APIS_LIST = (<ListItem key={ 'apis' }
+                       primaryText="APIs List"
+                       href="/portal/admin/apis"
+                       value="/portal/admin/apis" />)
+    let APIS_CREATE = (<ListItem key={ 'apiCreate' }
+                         primaryText="Create API"
+                         href="/portal/admin/apis/create"
+                         value="/portal/admin/apis/create" />)
+    let SERVICES_LIST = (<ListItem key={ 'services' }
+                           primaryText="Services List"
+                           href="/portal/admin/services"
+                           value="/portal/admin/services" />)
+    let SERVICES_CREATE = (<ListItem key={ 'services' }
+                             primaryText="Create Service"
+                             href="/portal/admin/services/create"
+                             value="/portal/admin/services/create" />)
+    let APPICATIONS_LIST = (<ListItem key={ 'applications' }
+                              primaryText="Appications List"
+                              href="/portal/admin/applications"
+                              value="/portal/admin/applications" />)
+    let APPICATIONS_CREATE = (<ListItem key={ 'applications' }
+                                primaryText="Create Application"
+                                href="/portal/admin/applications/create"
+                                value="/portal/admin/applications/create" />)
 
     return (
       <Paper style={ style.paper }>
         <SelectableList value={ location.pathname } onChange={ onChangeList }>
-          <ListItem primaryText="Dashboard" leftIcon={ <DashboardIcon /> } value="/portal/admin/dashboard" href="/portal/admin/dashboard" />
+          <ListItem primaryText="Dashboard"
+            leftIcon={ <DashboardIcon /> }
+            value="/portal/admin/dashboard"
+            href="/portal/admin/dashboard" />
           <Divider />
-          <ListItem primaryText="APIs" leftIcon={ <HttpIcon /> } primaryTogglesNestedList={ true } nestedItems={ [<ListItem key={ 'apis' } primaryText="APIs List" href="/portal/admin/apis" value="/portal/admin/apis" />, <ListItem key={ 'apiCreate' } primaryText="Create API" href="/portal/admin/apis/create" value="/portal/admin/apis/create" />] } />
-          <ListItem primaryText="Address" leftIcon={ <StorageIcon /> } value="/portal/admin/address" href="/portal/admin/address" />
-          <ListItem primaryText="Applications" leftIcon={ <DeveloperModeIcon /> } value="/portal/admin/applications" href="/portal/admin/applications" />
-          <ListItem primaryText="Supervisor" leftIcon={ <SupervisorIcon /> } initiallyOpen={ true } primaryTogglesNestedList={ true } nestedItems={ [<ListItem key={ 1 } primaryText="Starred" leftIcon={ <ActionGrade /> } />, <ListItem key={ 2 } primaryText="Starred" leftIcon={ <ActionGrade /> } />] } />
+          <ListItem primaryText="APIs"
+            leftIcon={ <HttpIcon /> }
+            primaryTogglesNestedList={ true }
+            nestedItems={ [APIS_LIST, APIS_CREATE] } />
+          <ListItem primaryText="Services"
+            leftIcon={ <StorageIcon /> }
+            primaryTogglesNestedList={ true }
+            nestedItems={ [SERVICES_LIST, SERVICES_CREATE] } />
+          <ListItem primaryText="Applications"
+            leftIcon={ <DeveloperModeIcon /> }
+            primaryTogglesNestedList={ true }
+            nestedItems={ [APPICATIONS_LIST, APPICATIONS_CREATE] } />
           <Divider />
         </SelectableList>
       </Paper>

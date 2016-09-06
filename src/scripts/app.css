@@ -66,3 +66,8 @@ ul.breadcrumbs-list li a.breadcrumb-active {
 .formPaper .controller {
     text-align: right;
 }
+
+.notifyBar {
+    color: #000;
+    background: #fff;
+}

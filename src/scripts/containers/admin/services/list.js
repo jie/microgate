@@ -5,45 +5,23 @@ import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
-import { viewAllApi } from '../../../actions'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
 
-class ApisListApp extends BaseReactComponent {
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired,
-  };
-
-  static propTypes = {
-    entities: React.PropTypes.array
-  }
-  static defaultProps = {
-    entities: []
-  }
+class ServicesApp extends BaseReactComponent {
 
   constructor(props) {
     super(props);
     this.state = {
-      entities: props.entities
+      entities: []
     }
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      entities: nextProps.entities
-    })
-  }
-
-  componentWillMount() {
-    this.handlLoadData(this.props.location.query)
+    console.log(nextProps)
   };
-
-  handlLoadData(query) {
-    this.props.viewAllApi(query)
-  };
-
 
   render() {
     let tabRows = [];
@@ -52,7 +30,7 @@ class ApisListApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
-            { item.name }
+            { i }
           </TableRowColumn>
           <TableRowColumn>
             { item.path }
@@ -61,7 +39,7 @@ class ApisListApp extends BaseReactComponent {
             { item.timeout }
           </TableRowColumn>
           <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/apis/create?name=${item.name}` } />
+            <FlatButton label="View" primary={ true } href={ `/portal/admin/entities/create?name=${item.name}` } />
           </TableRowColumn>
         </TableRow>
       )
@@ -98,8 +76,6 @@ class ApisListApp extends BaseReactComponent {
 }
 
 
-
-
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
   return {
@@ -108,5 +84,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps, {
-  viewAllApi
-})(ApisListApp)
+  viewAllService
+})(ServicesApp)

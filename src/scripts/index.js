@@ -14,6 +14,6 @@ const history = syncHistoryWithStore(browserHistory, store)
 injectTapEventPlugin()
 
 render(
-    <Root store={store} history={history} />,
-    document.getElementById('app')
+  <Root store={ store } history={ history } />,
+  document.getElementById('app')
 )

@@ -4,9 +4,7 @@ import cookie from '../utils/cookie'
 import Settings from '../settings'
 
 
-function loginReducer(state = {
-    notifyBarMessage: ''
-  }, action) {
+function loginReducer(state = {}, action) {
   const {type, data} = action;
   switch (type) {
     case LOGIN_ACTION_TYPE.LOGIN_SUCCESS:
@@ -17,17 +15,22 @@ function loginReducer(state = {
           expdays: Settings.cookie.expiredays
         })
         return merge({}, state, {
-          authenticated: true
+          notifyStatus: {
+            open: false,
+            message: '',
+            type: 'info'
+          }
         })
       }
       break;
     case LOGIN_ACTION_TYPE.LOGIN_FAILURE:
-      console.log('action:', action)
-      let res = merge({}, state, {
-        notifyBarMessage: action.error
+      return merge({}, state, {
+        notifyStatus: {
+          open: true,
+          message: action.error,
+          type: 'error'
+        }
       })
-      return res
-    default:
   }
 
   return state

@@ -3,6 +3,7 @@ import redis from 'redis';
 import coRedis from "co-redis";
 import AccountService from './service/account';
 import ApiService from './service/api';
+import co from 'co';
 
 let redisClient = redis.createClient(settings.settings.redis);
 let coRedisClient = coRedis(redisClient);
@@ -70,19 +71,18 @@ export default [{
   path: '/portal/rest/apis/create',
   matchAll: true,
   handler: async function(ctx) {
-    let body = ctx.request.body;
-    settings.settings['methodsMap'][body['name']] = {
-      'path': body.path,
-      'timeout': body.timeout,
-      'body': body.bodyItems,
-      'header': body.headerItems
+    console.log('ctx.request.body: ', ctx.request.body)
+    let res
+    if (ctx.request.body.id) {
+      res = await ctx.app.models.api.update({
+        id: ctx.request.body.id
+      }, ctx.request.body)
+    } else {
+      res = await ctx.app.models.api.create(ctx.request.body)
     }
-    let apiService = new ApiService(settings.settings.RedisKeyPrefix)
-    let result = await apiService.create(settings.settings.methodsMap)
-    if (!result.success) {
-      ctx.throw(result.message, 400)
-    }
-    return JSON.stringify(result)
+    return JSON.stringify({
+      pk: res.id
+    })
   }
 }, {
   method: 'POST',
@@ -105,16 +105,26 @@ export default [{
     })
   }
 }, {
-  method: 'GET',
+  method: 'POST',
   path: '/portal/rest/apis/query',
   matchAll: true,
   handler: async function(ctx) {
-    let apiService = new ApiService(settings.settings.RedisKeyPrefix)
-    let result = await apiService.query(ctx.body.search)
-    if (!result.success) {
-      ctx.throw(result.message, 400)
-    }
-    return JSON.stringfiy(result);
+    let res = await ctx.app.models.api.find()
+    return JSON.stringify({
+      entities: res
+    })
+  }
+}, {
+  method: 'POST',
+  path: '/portal/rest/apis/view',
+  matchAll: true,
+  handler: async function(ctx) {
+    let res = await ctx.app.models.api.findOne({
+      name: ctx.request.body.name
+    })
+    return JSON.stringify({
+      entity: res
+    })
   }
 }, {
   method: 'POST',
