@@ -14,6 +14,7 @@ import { Link } from 'react-router'
 import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import HttpIcon from 'material-ui/svg-icons/action/http';
 import StorageIcon from 'material-ui/svg-icons/device/storage';
+import PeopleIcon from 'material-ui/svg-icons/social/people';
 import DeveloperModeIcon from 'material-ui/svg-icons/device/developer-mode';
 import SupervisorIcon from 'material-ui/svg-icons/action/supervisor-account';
 
@@ -76,6 +77,15 @@ export default class SideList extends BaseReactComponent {
                                 href="/portal/admin/applications/create"
                                 value="/portal/admin/applications/create" />)
 
+    let USERS_LIST = (<ListItem key={ 'users' }
+                        primaryText="Users List"
+                        href="/portal/admin/users"
+                        value="/portal/admin/users" />)
+    let USERS_CREATE = (<ListItem key={ 'users' }
+                          primaryText="Create User"
+                          href="/portal/admin/users/create"
+                          value="/portal/admin/users/create" />)
+
     return (
       <Paper style={ style.paper }>
         <SelectableList value={ location.pathname } onChange={ onChangeList }>
@@ -96,7 +106,10 @@ export default class SideList extends BaseReactComponent {
             leftIcon={ <DeveloperModeIcon /> }
             primaryTogglesNestedList={ true }
             nestedItems={ [APPICATIONS_LIST, APPICATIONS_CREATE] } />
-          <Divider />
+          <ListItem primaryText="Users"
+            leftIcon={ <PeopleIcon /> }
+            primaryTogglesNestedList={ true }
+            nestedItems={ [USERS_LIST, USERS_CREATE] } />
         </SelectableList>
       </Paper>
       );

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -7,54 +8,62 @@ import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
 import SelectField from 'material-ui/SelectField';
 import GroupTextField from '../../../components/groupTextField'
+import SelectableChip from '../../../components/selectable_chip'
 import BaseReactComponent from '../../../components/base'
-import { createService, viewService } from '../../../actions'
+import { createUser, viewUser } from '../../../actions'
 import { connect } from 'react-redux'
 
-const HeaderKeyDataSource = [
-  'Accept',
-  'Accept-Charset',
-  'Accept-Encoding',
-  'Accept-Language',
-  'Authorization',
-  'Cache-Control',
-  'Cookie',
-  'Content-Type',
-  'User-Agent'
-]
 
-const HeaderValDataSource = [
-  'application/x-www-form-urlencoded',
-  'application/json',
-  'application/xml',
-  'multipart/form-data',
-]
 
-class ServicesCreateApp extends BaseReactComponent {
+const chipWrapperStyle = {
+  marginLeft: '20px',
+  display: 'inline-block'
+}
+
+const labelStyle = {
+  marginTop: '10px',
+  float: 'left'
+}
+
+class UsersCreateApp extends BaseReactComponent {
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     entity: {
-      header: [],
-      body: [],
       name: '',
-      port: '',
-      host: '',
-      timeout: '',
+      username: '',
+      password: '',
+      repeatPassword: '',
       remark: '',
-      isInner: false,
-      isSign: false,
-      isEnable: true,
-      isForwarding: false
+      permissions: [],
+      isEnable: true
     }
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      entity: props.entity
+      entity: props.entity,
+      permissions: [
+        {
+          label: 'User',
+          value: 'user',
+        },
+        {
+          label: 'Service',
+          value: 'service',
+        },
+        {
+          label: 'API',
+          value: 'api',
+        },
+        {
+          label: 'Applications',
+          value: 'application',
+        }
+      ]
     };
   };
 
@@ -81,8 +90,13 @@ class ServicesCreateApp extends BaseReactComponent {
   };
 
   handleSubmitForm = (e) => {
-    console.log('handleSubmitForm:', this.state.entity)
-    this.props.createService(this.state.entity)
+    let permissions = []
+    for (let permission of this.state.permissions) {
+      if (permission.selected == true) {
+        permissions.push(permission.value)
+      }
+    }
+    this.props.createUser(this.state.entity)
   };
 
   handleTextFieldChange = (e) => {
@@ -103,8 +117,8 @@ class ServicesCreateApp extends BaseReactComponent {
   };
 
   handlLoadData(query) {
-    if (query.name) {
-      this.props.viewService(query)
+    if (query.id) {
+      this.props.viewUser(query)
     }
   };
 
@@ -115,13 +129,61 @@ class ServicesCreateApp extends BaseReactComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps.entity:', nextProps.entity)
+
+    for (let p = 0; p <= this.state.permissions.length - 1; p++) {
+      if (nextProps.entity.permissions.includes(this.state.permissions[p].value)) {
+        this.state.permissions[p].selected = true;
+      } else {
+        this.state.permissions[p].selected = false;
+      }
+    }
+
     this.setState({
       entity: nextProps.entity
     })
   }
 
+  handlePermissionTap = (data, e) => {
+    let permissions = this.state.permissions
+    let entity = this.state.entity
+    let entity_permission = []
+    for (let i in permissions) {
+      if (permissions[i].value == data.value) {
+        if (permissions[i].selected) {
+          permissions[i].selected = false
+        } else {
+          permissions[i].selected = true
+        }
+        break;
+      }
+    }
+
+    for (let p of permissions) {
+      if (p.selected) {
+        entity_permission.push(p.value)
+      }
+    }
+
+    entity.permissions = entity_permission
+
+    this.setState({
+      entity: entity,
+      permissions: permissions
+    })
+  }
+
+  renderChip(data) {
+    return (
+      <SelectableChip key={ data.value }
+        label={ data.label }
+        value={ data.value }
+        selected={ data.selected }
+        handleTouchTap={ this.handlePermissionTap.bind(null, data) }></SelectableChip>
+      );
+  }
+
   render() {
+
     return (
       <div className="formPaper">
         <Paper className="flatPaper">
@@ -131,23 +193,23 @@ class ServicesCreateApp extends BaseReactComponent {
             fullWidth={ true }
             floatingLabelText="Name" />
           <br />
-          <TextField name="host"
+          <TextField name="username"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.host }
+            value={ this.state.entity.username }
             fullWidth={ true }
-            floatingLabelText="Host" />
+            floatingLabelText="Username" />
           <br />
-          <TextField name="port"
+          <TextField name="password"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.port }
+            value={ this.state.entity.password }
             fullWidth={ true }
-            floatingLabelText="Port" />
+            floatingLabelText="Password" />
           <br />
-          <TextField name="timeout"
+          <TextField name="repeatPassword"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.timeout }
+            value={ this.state.entity.repeatPassword }
             fullWidth={ true }
-            floatingLabelText="Request Timeout" />
+            floatingLabelText="Repeat Password" />
           <br />
           <TextField name="remark"
             onChange={ this.handleTextFieldChange }
@@ -157,37 +219,25 @@ class ServicesCreateApp extends BaseReactComponent {
             fullWidth={ true }
             rows={ 4 } />
           <br />
-          <GroupTextField groupType="HeaderItems"
-            key="custom-header"
-            title="Custom Headers"
-            fieldsList={ this.state.entity.header }
-            dataKeySource={ HeaderKeyDataSource }
-            dataValSource={ HeaderValDataSource } />
-          <GroupTextField groupType="BodyItems"
-            key="custom-body"
-            title="Custom Body"
-            fieldsList={ this.state.entity.body } />
+          <div>
+            <div style={ labelStyle }>
+              Permissions
+            </div>
+            <div style={ chipWrapperStyle }>
+              { this.state.permissions.map(this.renderChip, this) }
+            </div>
+          </div>
           <br />
-          <Checkbox name="isInner"
-            onCheck={ this.handleCheckboxChange }
-            label="Inner Service"
-            checked={ this.state.entity.isInner } />
-          <br />
-          <Checkbox name="isSign"
-            onCheck={ this.handleCheckboxChange }
-            label="Verify Signature"
-            checked={ this.state.entity.isSign } />
-          <br />
-          <Checkbox name="isForwarding"
-            onCheck={ this.handleCheckboxChange }
-            label="Just forwarding request"
-            checked={ this.state.entity.isForwarding } />
           <br />
           <Divider />
           <br />
+          <Checkbox name="isEnable"
+            onCheck={ this.handleCheckboxChange }
+            label="enabled"
+            checked={ this.state.entity.isEnable } />
+          <br />
+          <br />
           <div className="controller">
-            <FlatButton label="Add Header" primary={ true } onTouchTap={ this.handleAppendHeaderItem } />
-            <FlatButton label="Add Body" primary={ true } onTouchTap={ this.handleAppendBodyItem } />
             <RaisedButton label="Submit" primary={ true } onTouchTap={ this.handleSubmitForm } />
           </div>
         </Paper>
@@ -197,7 +247,7 @@ class ServicesCreateApp extends BaseReactComponent {
 }
 
 
-ServicesCreateApp.propTypes = {
+UsersCreateApp.propTypes = {
   entity: PropTypes.object
 }
 
@@ -211,6 +261,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps, {
-  createService,
-  viewService
-})(ServicesCreateApp)
+  createUser,
+  viewUser
+})(UsersCreateApp)

@@ -3,9 +3,9 @@ import { push } from 'react-router-redux';
 import Settings from '../../settings';
 
 const CREATESERVICE_ACTION_TYPE = {
-  CREATEAPI_REQUEST: 'CREATEAPI_REQUEST',
-  CREATEAPI_SUCCESS: 'CREATEAPI_SUCCESS',
-  CREATEAPI_FAILURE: 'CREATEAPI_FAILURE'
+  CREATESERVICE_REQUEST: 'CREATESERVICE_REQUEST',
+  CREATESERVICE_SUCCESS: 'CREATESERVICE_SUCCESS',
+  CREATESERVICE_FAILURE: 'CREATESERVICE_FAILURE'
 }
 
 const VIEWSERVICE_ACTION_TYPE = {
@@ -20,17 +20,17 @@ const VIEWALLSERVICE_ACTION_TYPE = {
   VIEWALLSERVICE_FAILURE: 'VIEWALLSERVICE_FAILURE'
 }
 
-function addService(data) {
+function _createService(data) {
   let body = JSON.stringify(data)
   return {
     [CALL_API]: {
       method: "POST",
       types: [
-        CREATESERVICE_ACTION_TYPE.CREATEAPI_REQUEST,
-        CREATESERVICE_ACTION_TYPE.CREATEAPI_SUCCESS,
-        CREATESERVICE_ACTION_TYPE.CREATEAPI_FAILURE
+        CREATESERVICE_ACTION_TYPE.CREATESERVICE_REQUEST,
+        CREATESERVICE_ACTION_TYPE.CREATESERVICE_SUCCESS,
+        CREATESERVICE_ACTION_TYPE.CREATESERVICE_FAILURE
       ],
-      endpoint: `/portal/rest/service/create`,
+      endpoint: Settings.api.services.create,
       schema: Schemas.USER,
       settings: {
         method: "POST",
@@ -45,14 +45,14 @@ function addService(data) {
 }
 
 
-function createService(apiInfo, requiredFields = []) {
+function createService(serviceInfo, requiredFields = []) {
   return (dispatch, getState) => {
-    return dispatch(addService(apiInfo))
+    return dispatch(_createService(serviceInfo))
   }
 }
 
 
-function viewApi(data) {
+function _viewService(data) {
   let body = JSON.stringify(data)
   return {
     [CALL_API]: {
@@ -62,7 +62,7 @@ function viewApi(data) {
         VIEWSERVICE_ACTION_TYPE.VIEWSERVICE_SUCCESS,
         VIEWSERVICE_ACTION_TYPE.VIEWSERVICE_FAILURE
       ],
-      endpoint: Settings.api.service.view,
+      endpoint: Settings.api.services.view,
       schema: Schemas.USER,
       settings: {
         method: "POST",
@@ -78,9 +78,9 @@ function viewApi(data) {
 
 
 
-function viewService(apiInfo, requiredFields = []) {
+function viewService(serviceInfo, requiredFields = []) {
   return (dispatch, getState) => {
-    return dispatch(viewApi(apiInfo))
+    return dispatch(_viewService(serviceInfo))
   }
 }
 
@@ -95,7 +95,7 @@ function _viewAllService(data) {
         VIEWALLSERVICE_ACTION_TYPE.VIEWALLSERVICE_SUCCESS,
         VIEWALLSERVICE_ACTION_TYPE.VIEWALLSERVICE_FAILURE
       ],
-      endpoint: Settings.api.service.list,
+      endpoint: Settings.api.services.list,
       schema: Schemas.USER,
       settings: {
         method: "POST",

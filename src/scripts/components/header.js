@@ -10,24 +10,30 @@ import muiTheme from './theme/theme';
 import BaseReactComponent from './base';
 
 export default class AppHeaderBar extends BaseReactComponent {
-    static propTypes = {
-        appTitle: React.PropTypes.string.isRequired,
-        onSignOut: React.PropTypes.func
-    };
-    render() {
-      return (
-          <AppBar
-                title={ this.props.appTitle }
-                iconElementRight={
-                    <IconMenu
-                        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem primaryText="Help" />
-                        <MenuItem primaryText="Signout" onTouchTap={this.props.onSignOut} />
-                    </IconMenu>
-                }
-            />
-        )
+  static propTypes = {
+    appTitle: React.PropTypes.string.isRequired,
+    onSignOut: React.PropTypes.func
+  };
+  render() {
+    let icon_button = <IconButton>
+                        <MoreVertIcon />
+                      </IconButton>
+    let targetOrigin = {
+      horizontal: 'right',
+      vertical: 'top'
     }
+    let anchorOrigin = {
+      horizontal: 'right',
+      vertical: 'top'
+    }
+    let help_item = <MenuItem primaryText="Help" />
+    let logout_item = <MenuItem primaryText="Signout" onTouchTap={ this.props.onSignOut } />
+    let icon_menu = <IconMenu iconButtonElement={ icon_button } targetOrigin={ targetOrigin } anchorOrigin={ anchorOrigin }>
+                      { help_item }
+                      { logout_item }
+                    </IconMenu>
+    return (
+      <AppBar title={ this.props.appTitle } iconElementRight={ icon_menu } />
+    )
+  }
 }

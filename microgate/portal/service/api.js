@@ -33,7 +33,6 @@ export default class ApiService {
     }
   }
   async getByName(name) {
-    console.log('getByName: ', name)
     let methodsMap = await this.coRedisClient.get(this.key);
     methodsMap = JSON.parse(methodsMap)
     let _api;

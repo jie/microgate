@@ -21,7 +21,17 @@ class ServicesApp extends BaseReactComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
+    this.setState({
+      entities: nextProps.entities
+    })
+  }
+
+  componentWillMount() {
+    this.handlLoadData(this.props.location.query)
+  };
+
+  handlLoadData(query) {
+    this.props.viewAllService(query)
   };
 
   render() {
@@ -31,20 +41,22 @@ class ServicesApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
-            { i }
+            { item.name }
           </TableRowColumn>
           <TableRowColumn>
-            { item.path }
+            { item.host }
+          </TableRowColumn>
+          <TableRowColumn>
+            { item.port }
           </TableRowColumn>
           <TableRowColumn>
             { item.timeout }
           </TableRowColumn>
           <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/entities/create?name=${item.name}` } />
+            <FlatButton label="View" primary={ true } href={ `/portal/admin/services/create?name=${item.name}` } />
           </TableRowColumn>
         </TableRow>
       )
-
     }
     return (
       <div className="formPaper">
@@ -56,7 +68,10 @@ class ServicesApp extends BaseReactComponent {
                   Name
                 </TableHeaderColumn>
                 <TableHeaderColumn>
-                  Path
+                  Host
+                </TableHeaderColumn>
+                <TableHeaderColumn>
+                  Port
                 </TableHeaderColumn>
                 <TableHeaderColumn>
                   Timeout
@@ -79,6 +94,7 @@ class ServicesApp extends BaseReactComponent {
 
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
+  console.log('listViewReducer:', listViewReducer)
   return {
     entities: listViewReducer.entities
   }

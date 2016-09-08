@@ -5,18 +5,19 @@ import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
-import Paginate from '../../../components/paginate'
 import { connect } from 'react-redux'
-import { viewAllApp } from '../../../actions'
+import { viewAllUser } from '../../../actions'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import Paginate from '../../../components/paginate'
 
-class ApplicationsApp extends BaseReactComponent {
+
+class UsersApp extends BaseReactComponent {
 
   constructor(props) {
     super(props);
     this.state = {
       entities: []
-    };
+    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -30,8 +31,13 @@ class ApplicationsApp extends BaseReactComponent {
   };
 
   handlLoadData(query) {
-    this.props.viewAllApp(query)
+    this.props.viewAllUser(query)
   };
+
+  displayPermissions(permissions) {
+    return permissions.join(',')
+  }
+
   render() {
     let tabRows = [];
     for (let i in this.state.entities) {
@@ -39,23 +45,22 @@ class ApplicationsApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
-            { item.id }
-          </TableRowColumn>
-          <TableRowColumn>
             { item.name }
           </TableRowColumn>
           <TableRowColumn>
-            { item.path }
+            { item.username }
           </TableRowColumn>
           <TableRowColumn>
-            { item.timeout }
+            { this.displayPermissions(item.permissions) }
           </TableRowColumn>
           <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/applications/create?id=${item.id}` } />
+            { item.isEnable }
+          </TableRowColumn>
+          <TableRowColumn>
+            <FlatButton label="View" primary={ true } href={ `/portal/admin/users/create?id=${item.id}` } />
           </TableRowColumn>
         </TableRow>
       )
-
     }
     return (
       <div className="formPaper">
@@ -64,16 +69,13 @@ class ApplicationsApp extends BaseReactComponent {
             <TableHeader>
               <TableRow>
                 <TableHeaderColumn>
-                  ID
-                </TableHeaderColumn>
-                <TableHeaderColumn>
                   Name
                 </TableHeaderColumn>
                 <TableHeaderColumn>
-                  Path
+                  Username
                 </TableHeaderColumn>
                 <TableHeaderColumn>
-                  Timeout
+                  Permissions
                 </TableHeaderColumn>
                 <TableHeaderColumn>
                   Operation
@@ -85,14 +87,11 @@ class ApplicationsApp extends BaseReactComponent {
             </TableBody>
           </Table>
         </Paper>
-        <Paginate total={ 22 }
-          page={ 1 }
-          perPage={ 20 }
-          style={ { marginTop: '15px', marginBottom: '15px' } } />
       </div>
       );
   }
 }
+
 
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
@@ -102,5 +101,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps, {
-  viewAllApp
-})(ApplicationsApp)
+  viewAllUser
+})(UsersApp)

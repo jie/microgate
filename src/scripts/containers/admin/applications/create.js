@@ -5,31 +5,13 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Divider from 'material-ui/Divider'
 import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
-import SelectField from 'material-ui/SelectField';
+import SelectField from 'material-ui/SelectField'
 import GroupTextField from '../../../components/groupTextField'
+import MenuItem from 'material-ui/MenuItem'
 import BaseReactComponent from '../../../components/base'
-import { createAnAPI, viewAnApi } from '../../../actions'
+import { createApp, viewApp, generateAppKeyPair } from '../../../actions'
 import { connect } from 'react-redux'
 import axios from 'axios'
-
-const HeaderKeyDataSource = [
-  'Accept',
-  'Accept-Charset',
-  'Accept-Encoding',
-  'Accept-Language',
-  'Authorization',
-  'Cache-Control',
-  'Cookie',
-  'Content-Type',
-  'User-Agent'
-]
-
-const HeaderValDataSource = [
-  'application/x-www-form-urlencoded',
-  'application/json',
-  'application/xml',
-  'multipart/form-data',
-]
 
 class ApplicationsCreateApp extends BaseReactComponent {
   static contextTypes = {
@@ -37,85 +19,96 @@ class ApplicationsCreateApp extends BaseReactComponent {
   };
 
   static defaultProps = {
-    apiService: {
-      header: [],
-      body: [],
+    entity: {
       name: '',
-      host: '',
-      timeout: '',
       remark: '',
-      isInner: false,
-      isSign: false
+      signType: 'rsa',
+      appKey: '',
+      appSecret: '',
+      sysKey: '',
+      sysSecret: '',
+      isEnable: true
     }
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      apiService: props.apiService
+      entity: props.entity
     };
   };
 
   handleAppendHeaderItem = (e) => {
-    let apiService = this.state.apiService;
-    if (!this.state.apiService.header) {
-      apiService.header = [];
+    let entity = this.state.entity;
+    if (!this.state.entity.header) {
+      entity.header = [];
     }
-    apiService.header.push({})
+    entity.header.push({})
     this.setState({
-      apiService: apiService
+      entity: entity
     })
   };
 
   handleAppendBodyItem = (e) => {
-    let apiService = this.state.apiService;
-    if (!this.state.apiService.body) {
-      apiService.body = [];
+    let entity = this.state.entity;
+    if (!this.state.entity.body) {
+      entity.body = [];
     }
-    apiService.body.push({})
+    entity.body.push({})
     this.setState({
-      apiService: apiService
+      entity: entity
     })
   };
 
   handleSubmitForm = (e) => {
-    console.log('handleSubmitForm:', this.state.apiService)
-    this.props.createAnAPI(this.state.apiService)
+    this.props.createApp(this.state.entity)
   };
 
+  handleGenerateKeyPair = (e) => {
+    this.props.generateAppKeyPair(this.state.entity)
+  }
+
   handleTextFieldChange = (e) => {
-    let apiService = this.state.apiService;
-    apiService[e.target.name] = e.target.value
+    let entity = this.state.entity;
+    entity[e.target.name] = e.target.value
     this.setState({
-      apiService: apiService
+      entity: entity
     })
   }
 
   handleCheckboxChange = (e) => {
-    let apiService = this.state.apiService;
-    apiService[e.target.name] = e.target.checked
+    let entity = this.state.entity;
+    entity[e.target.name] = e.target.checked
     this.setState({
-      apiService: apiService
+      entity: entity
     })
-
   };
 
+  handleSelectChange = (e, index, value) => {
+    let entity = this.state.entity;
+    entity.signType = value;
+    this.setState({
+      entity: entity
+    })
+  }
+
   handlLoadData(query) {
-    if (query.name) {
-      this.props.viewAnApi(query)
+    if (query.id) {
+      this.props.viewApp(query)
     }
   };
 
   componentWillMount() {
+    console.log('this.props.location: ', this.props.location)
     if (this.props.location.search) {
       this.handlLoadData(this.props.location.query)
     }
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps.apiService:', nextProps.apiService)
+    console.log('nextProps.entity:', nextProps.entity)
     this.setState({
-      apiService: nextProps.apiService
+      entity: nextProps.entity
     })
   }
 
@@ -125,61 +118,65 @@ class ApplicationsCreateApp extends BaseReactComponent {
         <Paper className="flatPaper">
           <TextField name="name"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.apiService.name }
+            value={ this.state.entity.name }
             fullWidth={ true }
             floatingLabelText="Name" />
           <br />
-          <TextField name="host"
-            onChange={ this.handleTextFieldChange }
-            value={ this.state.apiService.host }
+          <SelectField value={ this.state.entity.signType }
+            onChange={ this.handleSelectChange }
             fullWidth={ true }
-            floatingLabelText="Host" />
+            floatingLabelText="Signature Type">
+            <MenuItem value={ "rsa" } primaryText="RSA" />
+            <MenuItem value={ "ecdsa" } primaryText="ECDSA" />
+            <MenuItem value={ "hmac" } primaryText="HMAC" />
+          </SelectField>
+          <br/>
+          <TextField name="appKey"
+            onChange={ this.handleTextFieldChange }
+            value={ this.state.entity.appKey }
+            fullWidth={ true }
+            disabled={ true }
+            floatingLabelText="App Key" />
           <br />
-          <TextField name="timeout"
+          <TextField name="appSecret"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.apiService.timeout }
+            value={ this.state.entity.appSecret }
             fullWidth={ true }
-            floatingLabelText="Request Timeout" />
+            disabled={ true }
+            floatingLabelText="App Secret" />
+          <br />
+          <TextField name="sysKey"
+            onChange={ this.handleTextFieldChange }
+            value={ this.state.entity.sysKey }
+            fullWidth={ true }
+            disabled={ true }
+            floatingLabelText="Sys Key" />
+          <br />
+          <TextField name="sysSecret"
+            onChange={ this.handleTextFieldChange }
+            value={ this.state.entity.sysSecret }
+            fullWidth={ true }
+            disabled={ true }
+            floatingLabelText="Sys Secret" />
           <br />
           <TextField name="remark"
             onChange={ this.handleTextFieldChange }
-            value={ this.state.apiService.remark }
+            value={ this.state.entity.remark }
             floatingLabelText="Remarks"
             multiLine={ true }
             fullWidth={ true }
             rows={ 4 } />
           <br />
-          <GroupTextField groupType="HeaderItems"
-            key="custom-header"
-            title="Custom Headers"
-            fieldsList={ this.state.apiService.header }
-            dataKeySource={ HeaderKeyDataSource }
-            dataValSource={ HeaderValDataSource } />
-          <GroupTextField groupType="BodyItems"
-            key="custom-body"
-            title="Custom Body"
-            fieldsList={ this.state.apiService.body } />
           <br />
-          <Checkbox name="isInner"
+          <Checkbox name="isEnable"
             onCheck={ this.handleCheckboxChange }
-            label="Inner Service"
-            checked={ this.state.apiService.isInner } />
-          <br />
-          <Checkbox name="isSign"
-            onCheck={ this.handleCheckboxChange }
-            label="Verify Signature"
-            checked={ this.state.apiService.isSign } />
-          <br />
-          <Checkbox name="isForwarding"
-            onCheck={ this.handleCheckboxChange }
-            label="Just forwarding request"
-            checked={ this.state.apiService.isForwarding } />
+            label="enabled"
+            checked={ this.state.entity.isEnable } />
           <br />
           <Divider />
           <br />
           <div className="controller">
-            <FlatButton label="Add Header" primary={ true } onTouchTap={ this.handleAppendHeaderItem } />
-            <FlatButton label="Add Body" primary={ true } onTouchTap={ this.handleAppendBodyItem } />
+            <FlatButton label="Generate Key Pairs" primary={ true } onTouchTap={ this.handleGenerateKeyPair } />
             <RaisedButton label="Submit" primary={ true } onTouchTap={ this.handleSubmitForm } />
           </div>
         </Paper>
@@ -190,19 +187,18 @@ class ApplicationsCreateApp extends BaseReactComponent {
 
 
 ApplicationsCreateApp.propTypes = {
-  apiService: PropTypes.object
+  entity: PropTypes.object
 }
 
-
-
 function mapStateToProps(state, ownProps) {
-  let {viewAnApiReducer} = state
+  let {detailViewReducer} = state
   return {
-    apiService: viewAnApiReducer.apiService
+    entity: detailViewReducer.entity
   }
 }
 
 export default connect(mapStateToProps, {
-  createAnAPI,
-  viewAnApi
+  createApp,
+  viewApp,
+  generateAppKeyPair
 })(ApplicationsCreateApp)

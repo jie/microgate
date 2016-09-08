@@ -83,6 +83,7 @@ class MainApp extends BaseReactComponent {
           <div className="mainbar">
             { this.props.children }
           </div>
+          <div style={ { clear: 'both' } }></div>
         </div>
         <NotifyBar status={ this.state.notifyStatus } handleActionTouchTap={ this.handleNotifyActionTouchTap } />
       </div>
