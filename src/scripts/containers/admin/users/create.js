@@ -200,12 +200,14 @@ class UsersCreateApp extends BaseReactComponent {
             floatingLabelText="Username" />
           <br />
           <TextField name="password"
+            type="password"
             onChange={ this.handleTextFieldChange }
             value={ this.state.entity.password }
             fullWidth={ true }
             floatingLabelText="Password" />
           <br />
           <TextField name="repeatPassword"
+            type="password"
             onChange={ this.handleTextFieldChange }
             value={ this.state.entity.repeatPassword }
             fullWidth={ true }

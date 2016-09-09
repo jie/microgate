@@ -23,7 +23,7 @@ function detailViewReducer(state = {}, action) {
           isEnable: res.entity.isEnable,
           body: res.entity.body || [],
           header: res.entity.header || []
-        }
+        },
       })
       break;
     case VIEWSERVICE_ACTION_TYPE.VIEWSERVICE_SUCCESS:
@@ -41,7 +41,7 @@ function detailViewReducer(state = {}, action) {
           isEnable: res.entity.isEnable,
           body: res.entity.body || [],
           header: res.entity.header || []
-        }
+        },
       })
       break;
     case VIEWAPP_ACTION_TYPE.VIEWAPP_SUCCESS:
@@ -56,7 +56,7 @@ function detailViewReducer(state = {}, action) {
           sysKey: res.entity.sysKey,
           sysSecret: res.entity.sysSecret,
           remark: res.entity.remark
-        }
+        },
       })
       break;
     case ViewUser_ACTION_TYPE.ViewUser_SUCCESS:
@@ -68,7 +68,7 @@ function detailViewReducer(state = {}, action) {
           username: res.entity.username,
           permissions: res.entity.permissions,
           remark: res.entity.remark
-        }
+        },
       })
       break;
 
@@ -83,22 +83,26 @@ function listViewReducer(state = {}, action) {
   switch (type) {
     case VIEWALLAPI_ACTION_TYPE.VIEWALLAPI_SUCCESS:
       return merge({}, state, {
-        entities: res.entities
+        entities: res.entities,
+        total: res.total
       })
       break;
     case VIEWALLSERVICE_ACTION_TYPE.VIEWALLSERVICE_SUCCESS:
       return merge({}, state, {
-        entities: res.entities
+        entities: res.entities,
+        total: res.total
       })
       break;
     case VIEWALLAPP_ACTION_TYPE.VIEWALLAPP_SUCCESS:
       return merge({}, state, {
-        entities: res.entities
+        entities: res.entities,
+        total: res.total
       })
       break;
     case ViewAllUser_ACTION_TYPE.ViewAllUser_SUCCESS:
       return merge({}, state, {
-        entities: res.entities
+        entities: res.entities,
+        total: res.total
       })
       break;
   }

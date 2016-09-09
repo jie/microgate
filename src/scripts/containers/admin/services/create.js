@@ -81,7 +81,6 @@ class ServicesCreateApp extends BaseReactComponent {
   };
 
   handleSubmitForm = (e) => {
-    console.log('handleSubmitForm:', this.state.entity)
     this.props.createService(this.state.entity)
   };
 
@@ -115,7 +114,6 @@ class ServicesCreateApp extends BaseReactComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps.entity:', nextProps.entity)
     this.setState({
       entity: nextProps.entity
     })

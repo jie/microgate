@@ -5,10 +5,10 @@ import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
+import Paginate from '../../../components/paginate'
 import { connect } from 'react-redux'
 import { viewAllUser } from '../../../actions'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import Paginate from '../../../components/paginate'
 
 
 class UsersApp extends BaseReactComponent {
@@ -45,6 +45,11 @@ class UsersApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
+            <a href={ `/portal/admin/users/create?id=${item.id}` }>
+              { item.id }
+            </a>
+          </TableRowColumn>
+          <TableRowColumn>
             { item.name }
           </TableRowColumn>
           <TableRowColumn>
@@ -56,9 +61,6 @@ class UsersApp extends BaseReactComponent {
           <TableRowColumn>
             { item.isEnable }
           </TableRowColumn>
-          <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/users/create?id=${item.id}` } />
-          </TableRowColumn>
         </TableRow>
       )
     }
@@ -69,6 +71,9 @@ class UsersApp extends BaseReactComponent {
             <TableHeader>
               <TableRow>
                 <TableHeaderColumn>
+                  ID
+                </TableHeaderColumn>
+                <TableHeaderColumn>
                   Name
                 </TableHeaderColumn>
                 <TableHeaderColumn>
@@ -77,9 +82,6 @@ class UsersApp extends BaseReactComponent {
                 <TableHeaderColumn>
                   Permissions
                 </TableHeaderColumn>
-                <TableHeaderColumn>
-                  Operation
-                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -87,6 +89,7 @@ class UsersApp extends BaseReactComponent {
             </TableBody>
           </Table>
         </Paper>
+        <Paginate total={ this.props.total } page={ this.getCurrentPage() } perPage={ 20 } />
       </div>
       );
   }

@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
+import Paginate from '../../../components/paginate'
 import { connect } from 'react-redux'
 import { viewAllService } from '../../../actions'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
@@ -12,11 +13,23 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 
 
 class ServicesApp extends BaseReactComponent {
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired,
+  };
 
+  static propTypes = {
+    entities: React.PropTypes.array,
+    total: React.PropTypes.number
+  }
+  static defaultProps = {
+    entities: [],
+    total: 0
+  }
   constructor(props) {
     super(props);
     this.state = {
-      entities: []
+      entities: props.entities,
+      total: props.total
     }
   };
 
@@ -41,6 +54,11 @@ class ServicesApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
+            <a href={ `/portal/admin/services/create?name=${item.name}` }>
+              { item.id }
+            </a>
+          </TableRowColumn>
+          <TableRowColumn>
             { item.name }
           </TableRowColumn>
           <TableRowColumn>
@@ -52,9 +70,6 @@ class ServicesApp extends BaseReactComponent {
           <TableRowColumn>
             { item.timeout }
           </TableRowColumn>
-          <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/services/create?name=${item.name}` } />
-          </TableRowColumn>
         </TableRow>
       )
     }
@@ -64,6 +79,9 @@ class ServicesApp extends BaseReactComponent {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHeaderColumn>
+                  ID
+                </TableHeaderColumn>
                 <TableHeaderColumn>
                   Name
                 </TableHeaderColumn>
@@ -76,9 +94,6 @@ class ServicesApp extends BaseReactComponent {
                 <TableHeaderColumn>
                   Timeout
                 </TableHeaderColumn>
-                <TableHeaderColumn>
-                  Operation
-                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,6 +101,7 @@ class ServicesApp extends BaseReactComponent {
             </TableBody>
           </Table>
         </Paper>
+        <Paginate total={ this.props.total } page={ this.getCurrentPage() } perPage={ 20 } />
       </div>
       );
   }
@@ -94,9 +110,9 @@ class ServicesApp extends BaseReactComponent {
 
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
-  console.log('listViewReducer:', listViewReducer)
   return {
-    entities: listViewReducer.entities
+    entities: listViewReducer.entities,
+    total: listViewReducer.total
   }
 }
 

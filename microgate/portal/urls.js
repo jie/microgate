@@ -4,6 +4,8 @@ import coRedis from "co-redis";
 import AccountService from './service/account';
 import ApiService from './service/api';
 import co from 'co';
+import crypto from 'crypto'
+
 
 let redisClient = redis.createClient(settings.settings.redis);
 let coRedisClient = coRedis(redisClient);
@@ -12,6 +14,10 @@ let coRedisClient = coRedis(redisClient);
 redisClient.on("error", function(err) {
   console.log("Redis Error " + err);
 });
+
+function digestPassword(password) {
+  return crypto.createHmac('sha256', password).digest('hex')
+}
 
 export default [{
   method: 'GET',
@@ -28,21 +34,37 @@ export default [{
   matchAll: true,
   handler: async function(ctx) {
     let accountService = new AccountService(settings.settings.RedisKeyPrefix)
-    let result = await accountService.login(ctx.request.body.username, ctx.request.body.password)
-    if (!result.success) {
-      ctx.throw(result.message, 400)
-    }
-    console.log('sessionId: ', result.sessionId)
-    return JSON.stringify({
-      user: {
-        username: result.userinfo.username,
-        createAt: result.userinfo.createAt,
-        updateAt: result.userinfo.updateAt,
-        type: result.userinfo.type
-      },
-      cookieName: 'microgate',
-      sessionId: result.sessionId
+    let data = ctx.request.body;
+    let password = digestPassword(data.password)
+
+    let user = await ctx.app.models.user.findOne({
+      username: ctx.request.body.username
     })
+
+    if (!user || !data.password) {
+      ctx.throw('user not found or password not matched', 400)
+    }
+
+    if (user.password != password) {
+      ctx.throw('user not found or password not matched.', 400)
+    }
+
+    let userinfo = {
+      username: user.username,
+      name: user.name,
+      updatedAt: user.updatedAt
+    }
+    let sessionId = await accountService.login(userinfo)
+
+    let response = {
+      user: userinfo,
+      cookieName: settings.settings.RedisKeyPrefix,
+      sessionId: sessionId,
+    }
+    if (data.nextUrl) {
+      response.nextUrl = data.nextUrl
+    }
+    return JSON.stringify(data)
   }
 }, {
   method: 'POST',
@@ -50,7 +72,7 @@ export default [{
   handler: async function(ctx) {
     let accountService = new AccountService(settings.settings.RedisKeyPrefix)
     let result = await accountService.logout(ctx.request.body.sessionId)
-    console.log('result: ', result);
+
     if (!result.success) {
       ctx.throw(result.message, 400)
     }
@@ -58,21 +80,6 @@ export default [{
       success: true,
       message: 'logout successful'
     })
-  }
-}, {
-  method: 'POST',
-  path: '/portal/rest/user/create',
-  matchAll: true,
-  handler: async function(ctx) {
-    let accountService = new AccountService(settings.settings.RedisKeyPrefix)
-    let result = await accountService.create(ctx.request.body.username, {
-      password: ctx.request.body.password
-    })
-    if (!result.success) {
-      ctx.throw(result.message, 400)
-    }
-
-    return JSON.stringify(result)
   }
 }, {
   method: 'POST',
@@ -225,8 +232,10 @@ export default [{
     }).sort({
       createdAt: 'desc'
     })
+    let total = await ctx.app.models.application.count()
     return JSON.stringify({
-      entities: res
+      entities: res,
+      total: total
     })
   }
 }, {
@@ -261,12 +270,32 @@ export default [{
   matchAll: true,
   handler: async function(ctx) {
     let res
+    let data = ctx.request.body;
+
+    if (data.password && data.repeatPassword) {
+
+      if (data.password != data.repeatPassword) {
+
+        ctx.throw('password not matched', 400)
+      }
+
+      if (data.password.length < 6) {
+        ctx.throw('password length must bigger than 6', 400)
+      }
+
+      if (data.password.length > 12) {
+        ctx.throw('password length must smaller than 12', 400)
+      }
+
+      data.password = digestPassword(data.password)
+    }
+
     if (ctx.request.body.id) {
       res = await ctx.app.models.user.update({
-        id: ctx.request.body.id
-      }, ctx.request.body)
+        id: data.id
+      }, data)
     } else {
-      res = await ctx.app.models.user.create(ctx.request.body)
+      res = await ctx.app.models.user.create(data)
     }
     return JSON.stringify({
       pk: res.id

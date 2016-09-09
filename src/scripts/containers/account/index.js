@@ -29,22 +29,22 @@ class AccountLoginApp extends BaseReactComponent {
     super(props)
     this.handleUserLogin = this.handleUserLogin.bind(this)
     this.state = {
-      notifyStatus: props.notifyStatus
+      notifyStatus: props.notifyStatus,
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      notifyStatus: nextProps.notifyStatus
+      notifyStatus: nextProps.notifyStatus,
     })
   }
 
   handleUserLogin(e) {
-    console.log('this.refs.usernameInput: ', this.refs.usernameInput)
     this.props.loginUser({
       username: this.refs.usernameInput.input.value,
       password: this.refs.passwordInput.input.value,
-      router: this.context.router
+      router: this.context.router,
+      nextUrl: this.props.location.query.nextUrl
     })
   }
 
@@ -62,9 +62,17 @@ class AccountLoginApp extends BaseReactComponent {
       <MuiThemeProvider muiTheme={ muiTheme }>
         <Paper className='Login' zDepth={ 3 }>
           <div>
-            <TextField ref="usernameInput" name="username" fullWidth={ true } hintText='Email' floatingLabelText='Email' />
+            <TextField ref="usernameInput"
+              name="username"
+              fullWidth={ true }
+              hintText='Username'
+              floatingLabelText='Username' />
             <br />
-            <TextField ref="passwordInput" name="password" fullWidth={ true } hintText='Password' floatingLabelText='Password' />
+            <TextField ref="passwordInput"
+              name="password"
+              fullWidth={ true }
+              hintText='Password'
+              floatingLabelText='Password' />
           </div>
           <div className='LoginButton'>
             <RaisedButton label='Signin' primary={ true } onTouchTap={ this.handleUserLogin } />
@@ -84,7 +92,6 @@ AccountLoginApp.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   let {loginReducer} = state
-  console.log('loginReducer:', loginReducer)
   return {
     notifyStatus: loginReducer.notifyStatus
   }

@@ -6,9 +6,14 @@ import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import { grey500, greenA400 } from 'material-ui/styles/colors';
 import BaseReactComponent from './base';
+import FontIcon from 'material-ui/FontIcon';
+import { blue500, red500, greenA200 } from 'material-ui/styles/colors';
 
-
-
+const iconStyles = {
+  marginTop: 5,
+  width: 20,
+  height: 20
+};
 export default class Paginate extends BaseReactComponent {
 
   constructor(props) {
@@ -45,12 +50,12 @@ export default class Paginate extends BaseReactComponent {
   }
 
   hasPrev() {
-    return this.page > 1
+    return this.state.page > 1
   }
 
   hasNext() {
     let pages = this.getPagesNum()
-    return this.page < pages
+    return this.state.page < pages
   }
 
   nextPage() {
@@ -98,29 +103,56 @@ export default class Paginate extends BaseReactComponent {
     return `${this.props.baseUrl}?page=${page}`
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      baseUrl: nextProps.baseUrl,
+      page: nextProps.page,
+      perPage: nextProps.perPage,
+      total: nextProps.total,
+      parameters: nextProps.parameters,
+      perPage: nextProps.perPage
+    })
+  }
+
+
   render() {
     let pageList = this.getIterPages()
     let pageItems = [];
+    let nextItem;
+    let prevItem;
+
+    if (this.hasNext()) {
+      nextItem = <li>
+                   <a href={ this.makeUrl(this.nextPage()) }>
+                     <ArrowForwardIcon style={ iconStyles } />
+                   </a>
+                 </li>
+    }
+
+    if (this.hasPrev()) {
+      prevItem = <li>
+                   <a href={ this.makeUrl(this.prevPage()) }>
+                     <ArrowBackIcon style={ iconStyles } />
+                   </a>
+                 </li>
+    }
 
     for (let i = 1; i <= pageList.length; i++) {
       pageItems.push(
         <li key={ i }>
-          <a href={ this.makeUrl(i) }>
+          <a className={ i == this.props.page ? 'active' : '' } href={ this.makeUrl(i) }>
             { i }
           </a>
         </li>
       )
     }
+
     return (
       <div className="paginate">
         <ul>
-          <li>
-            <a href={ this.makeUrl(this.prevPage()) }>prev</a>
-          </li>
+          { prevItem }
           { pageItems }
-          <li>
-            <a href={ this.makeUrl(this.nextPage()) }>next</a>
-          </li>
+          { nextItem }
           <div style={ { clear: 'both' } }></div>
         </ul>
       </div>

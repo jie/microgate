@@ -97,12 +97,12 @@ ul.breadcrumbs-list li a.breadcrumb-active {
 .paginate li {
     float: left;
     list-style: none;
-    height: 40px;
+    height: 30px;
     background-color: #fff;
     border: 1px solid #ccc;
-    width: 40px;
+    min-width: 30px;
     text-align: center;
-    line-height: 40px;
+    line-height: 30px;
     margin-left: -2px;
     color: #666
 }
@@ -114,11 +114,17 @@ ul.breadcrumbs-list li a.breadcrumb-active {
 .paginate li a {
     text-decoration: none;
     color: #000;
+    height: 30px;
+    min-width: 30px;
+    line-height: 30px;
+    display: block;
 }
 
-.paginate li:hover {
-    cursor: pointer;
+.paginate li a.active {
+    background: #ddd;
 }
+
 .paginate li a:hover {
     text-decoration: underline;
+    background: #eee;
 }

@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Divider from 'material-ui/Divider'
 import Checkbox from 'material-ui/Checkbox'
 import BaseReactComponent from '../../../components/base'
+import Paginate from '../../../components/paginate'
 import { viewAllApi } from '../../../actions'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
@@ -17,16 +18,19 @@ class ApisListApp extends BaseReactComponent {
   };
 
   static propTypes = {
-    entities: React.PropTypes.array
+    entities: React.PropTypes.array,
+    total: React.PropTypes.number
   }
   static defaultProps = {
-    entities: []
+    entities: [],
+    total: 0
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      entities: props.entities
+      entities: props.entities,
+      total: props.total
     }
   };
 
@@ -52,6 +56,11 @@ class ApisListApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
+            <a href={ `/portal/admin/apis/create?name=${item.name}` }>
+              { item.id }
+            </a>
+          </TableRowColumn>
+          <TableRowColumn>
             { item.name }
           </TableRowColumn>
           <TableRowColumn>
@@ -59,9 +68,6 @@ class ApisListApp extends BaseReactComponent {
           </TableRowColumn>
           <TableRowColumn>
             { item.timeout }
-          </TableRowColumn>
-          <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/apis/create?name=${item.name}` } />
           </TableRowColumn>
         </TableRow>
       )
@@ -74,6 +80,9 @@ class ApisListApp extends BaseReactComponent {
             <TableHeader>
               <TableRow>
                 <TableHeaderColumn>
+                  ID
+                </TableHeaderColumn>
+                <TableHeaderColumn>
                   Name
                 </TableHeaderColumn>
                 <TableHeaderColumn>
@@ -82,9 +91,6 @@ class ApisListApp extends BaseReactComponent {
                 <TableHeaderColumn>
                   Timeout
                 </TableHeaderColumn>
-                <TableHeaderColumn>
-                  Operation
-                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -92,6 +98,7 @@ class ApisListApp extends BaseReactComponent {
             </TableBody>
           </Table>
         </Paper>
+        <Paginate total={ this.props.total } page={ this.getCurrentPage() } perPage={ 20 } />
       </div>
       );
   }
@@ -103,7 +110,8 @@ class ApisListApp extends BaseReactComponent {
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
   return {
-    entities: listViewReducer.entities
+    entities: listViewReducer.entities,
+    total: listViewReducer.total
   }
 }
 

@@ -12,16 +12,31 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 
 class ApplicationsApp extends BaseReactComponent {
 
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired,
+  };
+
+  static propTypes = {
+    entities: React.PropTypes.array,
+    total: React.PropTypes.number
+  }
+  static defaultProps = {
+    entities: [],
+    total: 0
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      entities: []
+      entities: props.entities,
+      total: props.total
     };
   };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      entities: nextProps.entities
+      entities: nextProps.entities,
+      total: nextProps.total
     })
   }
 
@@ -32,6 +47,7 @@ class ApplicationsApp extends BaseReactComponent {
   handlLoadData(query) {
     this.props.viewAllApp(query)
   };
+
   render() {
     let tabRows = [];
     for (let i in this.state.entities) {
@@ -39,7 +55,9 @@ class ApplicationsApp extends BaseReactComponent {
       tabRows.push(
         <TableRow key={ i }>
           <TableRowColumn>
-            { item.id }
+            <a href={ `/portal/admin/applications/create?id=${item.id}` }>
+              { item.id }
+            </a>
           </TableRowColumn>
           <TableRowColumn>
             { item.name }
@@ -50,13 +68,15 @@ class ApplicationsApp extends BaseReactComponent {
           <TableRowColumn>
             { item.timeout }
           </TableRowColumn>
-          <TableRowColumn>
-            <FlatButton label="View" primary={ true } href={ `/portal/admin/applications/create?id=${item.id}` } />
-          </TableRowColumn>
         </TableRow>
       )
 
     }
+
+    let currentPage = this.getCurrentPage();
+    console.log('currentpage: ', currentPage)
+    let total = this.props.total;
+    console.log('total:', total)
     return (
       <div className="formPaper">
         <Paper>
@@ -75,9 +95,6 @@ class ApplicationsApp extends BaseReactComponent {
                 <TableHeaderColumn>
                   Timeout
                 </TableHeaderColumn>
-                <TableHeaderColumn>
-                  Operation
-                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -85,10 +102,7 @@ class ApplicationsApp extends BaseReactComponent {
             </TableBody>
           </Table>
         </Paper>
-        <Paginate total={ 22 }
-          page={ 1 }
-          perPage={ 20 }
-          style={ { marginTop: '15px', marginBottom: '15px' } } />
+        <Paginate total={ this.props.total } page={ currentPage } perPage={ 20 } />
       </div>
       );
   }
@@ -97,7 +111,8 @@ class ApplicationsApp extends BaseReactComponent {
 function mapStateToProps(state, ownProps) {
   let {listViewReducer} = state
   return {
-    entities: listViewReducer.entities
+    entities: listViewReducer.entities,
+    total: listViewReducer.total
   }
 }
 
