@@ -75,8 +75,11 @@
   "dependencies": {
     "argh": "^0.1.4",
     "babel-runtime": "^6.11.6",
+    "biguint-format": "^1.0.0",
     "co-redis": "^2.1.1",
     "esprima-fb": "^15001.1001.0-dev-harmony-fb",
+    "flake-idgen": "^1.1.0",
+    "hashids": "^1.1.1",
     "humps": "^1.1.0",
     "koa": "^2.0.0",
     "koa-bodyparser": "^3.2.0",

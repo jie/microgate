@@ -9,7 +9,7 @@ import SelectField from 'material-ui/SelectField'
 import GroupTextField from '../../../components/groupTextField'
 import MenuItem from 'material-ui/MenuItem'
 import BaseReactComponent from '../../../components/base'
-import { createApp, viewApp, generateAppKeyPair } from '../../../actions'
+import { createApp, viewApp, generateAppKeyPairs } from '../../../actions'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -65,7 +65,8 @@ class ApplicationsCreateApp extends BaseReactComponent {
   };
 
   handleGenerateKeyPair = (e) => {
-    this.props.generateAppKeyPair(this.state.entity)
+    console.log('generateAppKeyPairs: ', this.props)
+    this.props.generateAppKeyPairs(this.state.entity)
   }
 
   handleTextFieldChange = (e) => {
@@ -145,20 +146,6 @@ class ApplicationsCreateApp extends BaseReactComponent {
             disabled={ true }
             floatingLabelText="App Secret" />
           <br />
-          <TextField name="sysKey"
-            onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.sysKey }
-            fullWidth={ true }
-            disabled={ true }
-            floatingLabelText="Sys Key" />
-          <br />
-          <TextField name="sysSecret"
-            onChange={ this.handleTextFieldChange }
-            value={ this.state.entity.sysSecret }
-            fullWidth={ true }
-            disabled={ true }
-            floatingLabelText="Sys Secret" />
-          <br />
           <TextField name="remark"
             onChange={ this.handleTextFieldChange }
             value={ this.state.entity.remark }
@@ -196,9 +183,9 @@ function mapStateToProps(state, ownProps) {
     entity: detailViewReducer.entity
   }
 }
-
+console.log('1111generateAppKeyPair:', generateAppKeyPairs)
 export default connect(mapStateToProps, {
   createApp,
   viewApp,
-  generateAppKeyPair
+  generateAppKeyPairs
 })(ApplicationsCreateApp)

@@ -1,15 +1,19 @@
+// account
 import { loginUser, logoutUser, LOGIN_ACTION_TYPE, LOGOUT_ACTION_TYPE } from './account';
+//api
 import { createAnAPI, CREATEAPI_ACTION_TYPE } from './admin/api';
 import { viewAnApi, VIEWAPI_ACTION_TYPE } from './admin/api';
 import { viewAllApi, VIEWALLAPI_ACTION_TYPE } from './admin/api';
+//service
 import { createService, CREATESERVICE_ACTION_TYPE } from './admin/service';
 import { viewService, VIEWSERVICE_ACTION_TYPE } from './admin/service';
 import { viewAllService, VIEWALLSERVICE_ACTION_TYPE } from './admin/service';
+// application
 import { createApp, CREATEAPP_ACTION_TYPE } from './admin/application';
 import { viewApp, VIEWAPP_ACTION_TYPE } from './admin/application';
 import { viewAllApp, VIEWALLAPP_ACTION_TYPE } from './admin/application';
 import { generateAppKeyPairs, GenAppKey_ACTION_TYPE } from './admin/application';
-
+console.log('generateAppKeyPairs:', generateAppKeyPairs)
 //user
 import { createUser, CreateUser_ACTION_TYPE } from './admin/user';
 import { viewUser, ViewUser_ACTION_TYPE } from './admin/user';

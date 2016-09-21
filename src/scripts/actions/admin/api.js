@@ -38,7 +38,8 @@ function addApi(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -70,7 +71,8 @@ function viewApi(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -103,7 +105,8 @@ function _viewAllApi(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }

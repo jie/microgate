@@ -37,7 +37,7 @@ const Settings = {
       view: '/portal/rest/applications/view',
       list: '/portal/rest/applications/query',
       create: '/portal/rest/applications/create',
-      generate_app_key_pair: '/portal/rest/applications/gen_key_pair'
+      generateKey: '/portal/rest/applications/generate/key'
     },
     users: {
       view: '/portal/rest/users/view',

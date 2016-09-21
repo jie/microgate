@@ -45,7 +45,8 @@ function _createApp(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -77,7 +78,8 @@ function _viewApp(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -110,7 +112,8 @@ function _viewAllApp(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -136,7 +139,7 @@ function _generateAppKeyPairs(data) {
         GenAppKey_ACTION_TYPE.GenAppKey_SUCCESS,
         GenAppKey_ACTION_TYPE.GenAppKey_FAILURE
       ],
-      endpoint: Settings.api.applications.generate_app_key_pair,
+      endpoint: Settings.api.applications.generateKey,
       schema: Schemas.USER,
       settings: {
         method: "POST",
@@ -144,7 +147,8 @@ function _generateAppKeyPairs(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }

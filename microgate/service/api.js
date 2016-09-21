@@ -1,15 +1,13 @@
-import settings from '../../settings';
-import redis from 'redis';
-import coRedis from "co-redis";
 import crypto from 'crypto'
-import nowDate from '../../utils/dateutils'
-import uuid from 'node-uuid';
+import nowDate from '../utils/dateutils'
+import uuid from 'node-uuid'
+import coRedisClient from './redis'
 
 export default class ApiService {
   constructor(prefix) {
     this.prefix = prefix
     this.key = `${prefix}:methodsMap`;
-    this.coRedisClient = coRedis(redis.createClient(settings.settings.redis));
+    this.coRedisClient = coRedisClient;
   }
 
   async update(methodsMap) {

@@ -38,7 +38,8 @@ function _createUser(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }
@@ -103,7 +104,8 @@ function _viewAllUser(data) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: body
+        body: body,
+        credentials: 'include'
       }
     }
   }

@@ -1,19 +1,10 @@
 import settings from '../settings';
-import redis from 'redis';
-import coRedis from "co-redis";
-import AccountService from './service/account';
-import ApiService from './service/api';
-import co from 'co';
+import AccountService from '../service/account';
+import ApiService from '../service/api';
 import crypto from 'crypto'
+import { generateKeyPairs, Signature } from '../utils/signature'
 
-
-let redisClient = redis.createClient(settings.settings.redis);
-let coRedisClient = coRedis(redisClient);
-
-
-redisClient.on("error", function(err) {
-  console.log("Redis Error " + err);
-});
+const DefaultPageSize = 20;
 
 function digestPassword(password) {
   return crypto.createHmac('sha256', password).digest('hex')
@@ -50,12 +41,12 @@ export default [{
     }
 
     let userinfo = {
+      id: user.id,
       username: user.username,
       name: user.name,
       updatedAt: user.updatedAt
     }
     let sessionId = await accountService.login(userinfo)
-
     let response = {
       user: userinfo,
       cookieName: settings.settings.RedisKeyPrefix,
@@ -64,7 +55,7 @@ export default [{
     if (data.nextUrl) {
       response.nextUrl = data.nextUrl
     }
-    return JSON.stringify(data)
+    return JSON.stringify(response)
   }
 }, {
   method: 'POST',
@@ -116,7 +107,7 @@ export default [{
     let page = ctx.request.body.page || 1;
     let res = await ctx.app.models.api.find().paginate({
       page: page,
-      limit: 20
+      limit: DefaultPageSize
     }).sort({
       createdAt: 'desc'
     })
@@ -173,7 +164,7 @@ export default [{
     let page = ctx.request.body.page || 1;
     let res = await ctx.app.models.service.find().paginate({
       page: page,
-      limit: 20
+      limit: DefaultPageSize
     }).sort({
       createdAt: 'desc'
     })
@@ -198,13 +189,21 @@ export default [{
   path: '/portal/rest/applications/create',
   matchAll: true,
   handler: async function(ctx) {
-    let res
+    let res;
+    let data = ctx.request.body;
+    data.appKey = '';
+    data.appSecret = '';
     if (ctx.request.body.id) {
       res = await ctx.app.models.application.update({
         id: ctx.request.body.id
-      }, ctx.request.body)
+      }, data)
     } else {
-      res = await ctx.app.models.application.create(ctx.request.body)
+      if (!ctx.request.body.appKey) {
+        let keyPairs = generateKeyPairs(ctx.userinfo.userId)
+        data.appKey = keyPairs.appKey;
+        data.appSecret = keyPairs.appSecret;
+      }
+      res = await ctx.app.models.application.create(data)
     }
     return JSON.stringify({
       pk: res.id
@@ -228,7 +227,7 @@ export default [{
     let page = ctx.request.body.page || 1;
     let res = await ctx.app.models.application.find().paginate({
       page: page,
-      limit: 20
+      limit: DefaultPageSize
     }).sort({
       createdAt: 'desc'
     })
@@ -252,13 +251,18 @@ export default [{
   }
 }, {
   method: 'POST',
-  path: '/portal/rest/applications/gen_key_pair',
+  path: '/portal/rest/applications/generate/key',
   matchAll: true,
   handler: async function(ctx) {
-    let signType = ctx.body.signType
-    let res = await ctx.app.models.application.findOne({
+    let data = ctx.request.body;
+    let signType = data.signType;
+    let keyPairs = generateKeyPairs(ctx.userinfo.userId)
+    data.appKey = keyPairs.appKey;
+    data.appSecret = keyPairs.appSecret;
+
+    let res = await ctx.app.models.application.update({
       id: ctx.request.body.id
-    })
+    }, data)
     return JSON.stringify({
       entity: res
     })
@@ -275,7 +279,6 @@ export default [{
     if (data.password && data.repeatPassword) {
 
       if (data.password != data.repeatPassword) {
-
         ctx.throw('password not matched', 400)
       }
 
@@ -319,7 +322,7 @@ export default [{
     let page = ctx.request.body.page || 1;
     let res = await ctx.app.models.user.find().paginate({
       page: page,
-      limit: 20
+      limit: DefaultPageSize
     }).sort({
       createdAt: 'desc'
     })

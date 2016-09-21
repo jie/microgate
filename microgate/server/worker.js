@@ -8,9 +8,9 @@ import handler from './handler'
 import dispatcher from '../portal'
 import dateutils from '../utils/dateutils'
 import serve from 'koa-static-server'
-import settings from '../settings';
+import settings from '../settings'
 import { orm, config } from '../model'
-
+import AccountService from '../service/account'
 
 const app = new Koa();
 const staticPath = path.join(__dirname, '/../../public');
@@ -47,6 +47,23 @@ app.use(async(ctx, next) => {
   }
 
   if (ctx.request.url.startsWith('/portal')) {
+    if (!ctx.request.url.startsWith('/portal/rest/account')) {
+      let sessionId = ctx.cookies.get('microgate')
+      if (!sessionId) {
+        ctx.throw('auth failed', 400)
+      } else {
+        let accountService = new AccountService(settings.settings.RedisKeyPrefix)
+        let userinfo = await accountService.getUserBySessionId(sessionId)
+        if (!userinfo || !userinfo.id) {
+          ctx.throw('user session not found', 400)
+        } else {
+          ctx.userinfo = {
+            sessionId: sessionId,
+            userId: userinfo.id
+          }
+        }
+      }
+    }
     let body = await dispatcher.handle(ctx);
     ctx.body = body;
   }
