@@ -13,11 +13,12 @@ import { createApp, CREATEAPP_ACTION_TYPE } from './admin/application';
 import { viewApp, VIEWAPP_ACTION_TYPE } from './admin/application';
 import { viewAllApp, VIEWALLAPP_ACTION_TYPE } from './admin/application';
 import { generateAppKeyPairs, GenAppKey_ACTION_TYPE } from './admin/application';
-console.log('generateAppKeyPairs:', generateAppKeyPairs)
 //user
 import { createUser, CreateUser_ACTION_TYPE } from './admin/user';
 import { viewUser, ViewUser_ACTION_TYPE } from './admin/user';
 import { viewAllUser, ViewAllUser_ACTION_TYPE } from './admin/user';
+// settings
+import { refreshSettings, RefreshType } from './settings';
 
 module.exports = {
   //account
@@ -54,4 +55,7 @@ module.exports = {
   CreateUser_ACTION_TYPE: CreateUser_ACTION_TYPE,
   ViewUser_ACTION_TYPE: ViewUser_ACTION_TYPE,
   ViewAllUser_ACTION_TYPE: ViewAllUser_ACTION_TYPE,
+  // settings
+  refreshSettings: refreshSettings,
+  RefreshType: RefreshType
 }

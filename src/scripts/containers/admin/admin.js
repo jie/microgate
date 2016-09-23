@@ -4,8 +4,7 @@ import AppHeaderBar from '../../components/header'
 import SideList from '../../components/sidebar'
 import BaseReactComponent from '../../components/base'
 import NotifyBar from '../../components/notify'
-import { loginUser } from '../../actions'
-import { logoutUser } from '../../actions'
+import { loginUser, logoutUser, refreshSettings } from '../../actions'
 import cookie from '../../utils/cookie'
 import Settings from '../../settings'
 
@@ -22,6 +21,7 @@ class MainApp extends BaseReactComponent {
       }
     }
     this.handleSignOut = this.handleSignOut.bind(this)
+    this.handleRefreshSettings = this.handleRefreshSettings.bind(this)
   }
 
   static contextTypes = {
@@ -34,6 +34,10 @@ class MainApp extends BaseReactComponent {
       navDrawerOpen: false,
     });
   };
+
+  handleRefreshSettings(e) {
+    this.props.refreshSettings()
+  }
 
   handleSignOut(e) {
     let sessionId = cookie.get(Settings.cookie.name)
@@ -75,7 +79,7 @@ class MainApp extends BaseReactComponent {
 
     return (
       <div>
-        <AppHeaderBar appTitle="Microgate" onSignOut={ this.handleSignOut } />
+        <AppHeaderBar appTitle="Microgate" onSignOut={ this.handleSignOut } onRefreshSettings={ this.handleRefreshSettings } />
         <div className="admin-body">
           <div className="sidebar">
             <SideList location={ this.props.location } onChangeList={ this.handleChangeList } />
@@ -96,7 +100,8 @@ MainApp.propTypes = {
   children: React.PropTypes.node,
   location: React.PropTypes.object,
   notifyStatus: React.PropTypes.object,
-  logoutUser: React.PropTypes.func.isRequired
+  logoutUser: React.PropTypes.func.isRequired,
+  refreshSettings: React.PropTypes.func.isRequired
 }
 
 
@@ -104,12 +109,12 @@ MainApp.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   let {adminNotifyReducer} = state
-  console.log('adminNotifyReducer:', adminNotifyReducer)
   return {
     notifyStatus: adminNotifyReducer.notifyStatus
   }
 }
 
 export default connect(mapStateToProps, {
-  logoutUser
+  logoutUser,
+  refreshSettings
 })(MainApp)

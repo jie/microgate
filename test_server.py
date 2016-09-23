@@ -35,5 +35,13 @@ def api3(path):
         }
     })
 
+@app.route('/usercenter/userinfo', methods=['GET', 'POST'])
+def api4():
+    return jsonify({
+        'userinfo': {
+            'username': 'zhouyang'
+        }
+    })
+
 if __name__ == '__main__':
     app.run(port=1330, host='0.0.0.0')

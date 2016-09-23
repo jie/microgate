@@ -1,4 +1,5 @@
 {
+    "envName": "MicrogateEnvId",
     "RedisKeyPrefix": "microgate",
     "redis": {
         "host": "127.0.0.1",
@@ -14,32 +15,6 @@
             "user" : "microgate",
             "password": "microgate",
             "database"  : "microgate"
-        }
-    },
-    "methodsMap": {
-        "usercenter.api1": {
-            "path": "/usercenter/api/1",
-            "timeout": 10
-        },
-        "usercenter.api2": {
-            "path": "/usercenter/api/2",
-            "timeout": 20
-        },
-        "usercenter.api3": {
-            "path": "/usercenter/api/3",
-            "timeout": 30
-        }
-    },
-    "addressMap": {
-        "usercenter": {
-            "host": "127.0.0.1",
-            "port": 1330,
-            "timeout": 30
-        },
-        "emailcenter": {
-            "host": "127.0.0.1",
-            "port": 1330,
-            "timeout": 30
         }
     }
 }

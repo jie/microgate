@@ -3,7 +3,8 @@ import AccountService from '../service/account';
 import ApiService from '../service/api';
 import crypto from 'crypto'
 import { generateKeyPairs, Signature } from '../utils/signature'
-
+import coRedisClient from '../redis'
+import uuid from 'node-uuid'
 const DefaultPageSize = 20;
 
 function digestPassword(password) {
@@ -342,5 +343,22 @@ export default [{
       entity: res
     })
   }
+}, {
+  method: 'POST',
+  path: '/portal/rest/settings/refresh',
+  matchAll: true,
+  handler: async function(ctx) {
 
+    let settingsId = uuid.v4();
+    await coRedisClient.set(settings.settings.envName, settingsId);
+    settings.setSettingsId(settingsId)
+
+    let a = await coRedisClient.get(settings.settings.envName);
+    let b = settings.getSettingsId()
+    console.log('a:', a, 'b:', b)
+
+    return JSON.stringify({
+      success: true
+    })
+  }
 }]

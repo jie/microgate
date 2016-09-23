@@ -11,7 +11,7 @@ import serve from 'koa-static-server'
 import settings from '../settings'
 import { orm, config } from '../model'
 import AccountService from '../service/account'
-
+import coRedisClient from '../redis'
 const app = new Koa();
 const staticPath = path.join(__dirname, '/../../public');
 
@@ -41,8 +41,47 @@ app.use(async(ctx, next) => {
 
 
 app.use(async(ctx, next) => {
+  let settingsId = await coRedisClient.get(settings.settings.envName)
+  console.log('settingsId in redis: ', settingsId)
+  console.log('settingsId: ', settings.getSettingsId())
+  if (!settingsId || settingsId != settings.getSettingsId()) {
+    let apisAll = await ctx.app.models.api.find({
+      isEnable: 1
+    })
+    if (apisAll) {
+      for (let item of apisAll) {
+        settings.settings.methodsMap[item.name] = item;
+      }
+    }
+    // console.log('apis', settings.settings.methodsMap)
+    let servicesAll = await ctx.app.models.service.find({
+      isEnable: 1
+    })
+    if (servicesAll) {
+      for (let item of servicesAll) {
+        settings.settings.servicesMap[item.name] = item
+      }
+    }
+    // console.log('servicesAll', settings.settings.servicesMap)
+
+    let appsAll = await ctx.app.models.application.find({
+      isEnable: 1
+    })
+
+    if (appsAll) {
+      for (let item of appsAll) {
+        if (item.appKey) {
+          settings.settings.applicationsMap[item.appKey] = item
+        }
+      }
+    }
+    // console.log('appsAll', settings.settings.applicationsMap)
+    settings.setSettingsId(settingsId)
+  }
+
   if (ctx.request.url.startsWith('/platform/api')) {
     let apiOptions = handler.getApiOptions(ctx);
+    console.log('apiOptions:', apiOptions)
     ctx.body = await handler.fetchApi(apiOptions);
   }
 

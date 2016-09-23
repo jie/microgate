@@ -44,6 +44,9 @@ const Settings = {
       list: '/portal/rest/users/query',
       create: '/portal/rest/users/create'
     },
+    settings: {
+      refresh: '/portal/rest/settings/refresh'
+    }
   }
 }
 
